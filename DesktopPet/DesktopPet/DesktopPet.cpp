@@ -6,10 +6,14 @@ DesktopPet::DesktopPet(HINSTANCE hInstance,const TCHAR * pictureName,int width, 
 {
 	wnd = new Wnd(hInstance, width, height);
 	character = new Character(wnd->GetHWND(), pictureName);
+	rightMenu = new RightMenu(wnd);
 }
 
 DesktopPet::~DesktopPet()
 {
+	delete wnd;
+	delete character;
+	delete rightMenu;
 }
 
 int DesktopPet::Run()
@@ -51,6 +55,10 @@ bool DesktopPet::Init()
 		SendMessage(hwnd, WM_SYSCOMMAND, SC_MOVE | HTCAPTION, 0);
 		return true;
 	});
+	wnd->RegisterWndProc(WM_LBUTTONDBLCLK,[this](auto hwnd, auto, auto) {
+		Logger::Log(L"ÄãË«»÷ÁË",hwnd);
+		return true;
+	});
 	return true;
 }
 
@@ -58,11 +66,14 @@ void DesktopPet::Loop()
 {
 	while (!close)
 	{
-		PeekMessage(&m_msg, wnd->GetHWND(), 0, 0, PM_REMOVE);
-		TranslateMessage(&m_msg);
-		DispatchMessage(&m_msg);
-		////...
-		//character->Draw();
-		//character->Logic();
+		if (PeekMessage(&m_msg, wnd->GetHWND(), 0, 0, PM_REMOVE)) 
+		{
+			if (m_msg.message == WM_QUIT)
+			{
+				break;
+			}
+			TranslateMessage(&m_msg);
+			DispatchMessage(&m_msg);
+		}
 	}
 }

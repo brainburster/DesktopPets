@@ -13,7 +13,7 @@ Wnd::Wnd(HINSTANCE hInstance, int width, int height) :
 	WndProcs = new std::unordered_map<UINT, std::function<bool(HWND, WPARAM, LPARAM)>>(128);
 	
 	WNDCLASSEX wcex;
-	wcex.lpfnWndProc = WndProc;
+	wcex.lpfnWndProc = Wnd::WndProc;
 	wcex.cbSize = sizeof(WNDCLASSEX);
 	wcex.style = CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS;
 	wcex.cbClsExtra = 0;
@@ -27,7 +27,7 @@ Wnd::Wnd(HINSTANCE hInstance, int width, int height) :
 	wcex.hIconSm = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
 	RegisterClassEx(&wcex);
 	//´´½¨´°¿Ú
-	m_hWnd = CreateWindowEx(WS_EX_APPWINDOW, m_szTitle, m_szWindowClass, WS_EX_OVERLAPPEDWINDOW,
+	m_hWnd = CreateWindowEx(WS_EX_APPWINDOW, m_szTitle, m_szWindowClass, WS_POPUP,
 		GetSystemMetrics(SM_CXSCREEN) / 2 - m_width / 2, GetSystemMetrics(SM_CYSCREEN) / 2 - m_height / 2,
 		m_width, m_height, NULL, NULL, m_hInstance, 0);
 
@@ -66,11 +66,16 @@ const HWND & Wnd::GetHWND() const
 	return m_hWnd;
 }
 
+const HINSTANCE & Wnd::GetHInstance() const
+{
+	return m_hInstance;
+}
+
 LRESULT Wnd::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-	if (WndProcs->find(message) != WndProcs->end())
+	if (WndProcs->find(message) != WndProcs->end()&& WndProcs->at(message)(hWnd, wParam, lParam))
 	{
-		WndProcs->at(message)(hWnd, wParam, lParam);
+		return 0;
 	}
 	return DefWindowProc(hWnd, message, wParam, lParam);
 }

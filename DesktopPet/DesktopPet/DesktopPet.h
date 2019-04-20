@@ -2,6 +2,7 @@
 
 #include "Wnd.h"
 #include "Character.h"
+#include "RightMenu.h"
 
 class DesktopPet
 {
@@ -15,6 +16,7 @@ private:
 	
 	Wnd * wnd;
 	Character * character;
+	RightMenu * rightMenu;
 
 	bool close;
 	MSG m_msg;

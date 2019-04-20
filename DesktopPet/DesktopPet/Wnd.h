@@ -11,6 +11,7 @@ public:
 	~Wnd();
 
 	const HWND & GetHWND() const;
+	const HINSTANCE & GetHInstance() const;
 	static std::unordered_map<UINT, std::function<bool(HWND, WPARAM, LPARAM)>> * WndProcs;
 	static LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 	void RegisterWndProc(UINT message,std::function<bool(HWND, WPARAM, LPARAM)> wndProc);

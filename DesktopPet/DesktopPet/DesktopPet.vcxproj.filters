@@ -36,6 +36,9 @@
     <ClInclude Include="Character.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="RightMenu.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DesktopPet.rc">
@@ -61,6 +64,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Character.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="RightMenu.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
