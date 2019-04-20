@@ -1,33 +1,22 @@
 #pragma once
-#include <Windows.h>
-#include <unordered_map>
-#include <functional>
+
+#include "Wnd.h"
+#include "Character.h"
 
 class DesktopPet
 {
 public:
-	DesktopPet(HINSTANCE hInstance);
+	DesktopPet(HINSTANCE hInstance,const TCHAR * pictureName, int width, int height);
 	~DesktopPet();
 	int Run();
-	static std::unordered_map<UINT, std::function<bool(HWND, WPARAM, LPARAM)>> * WndProcs;
-	static LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 private:
-	bool Start();
-	void End();
+	bool Init();
 	void Loop();
-	void Update();
+	
+	Wnd * wnd;
+	Character * character;
 
-	HINSTANCE m_hInstance;
-	TCHAR m_szTitle[20];
-	TCHAR m_szWindowClass[20];
-	HWND m_hWnd;
-	MSG m_msg;
-	int m_height = 600;
-	int m_width = 400;
 	bool close;
-
-	HBITMAP image;
-	BITMAP bm;
-	HDC hdcImage;
+	MSG m_msg;
 };
 

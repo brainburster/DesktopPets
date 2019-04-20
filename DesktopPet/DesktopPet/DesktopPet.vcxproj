@@ -151,15 +151,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Character.h" />
     <ClInclude Include="DesktopPet.h" />
     <ClInclude Include="header.h" />
     <ClInclude Include="logger.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="Wnd.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Character.cpp" />
     <ClCompile Include="DesktopPet.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Wnd.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DesktopPet.rc" />

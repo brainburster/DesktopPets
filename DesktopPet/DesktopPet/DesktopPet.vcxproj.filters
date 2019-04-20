@@ -30,6 +30,12 @@
     <ClInclude Include="logger.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="Wnd.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Character.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DesktopPet.rc">
@@ -49,6 +55,12 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="DesktopPet.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Wnd.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Character.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
