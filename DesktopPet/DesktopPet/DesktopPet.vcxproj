@@ -156,14 +156,14 @@
     <ClInclude Include="DesktopPet.h" />
     <ClInclude Include="header.h" />
     <ClInclude Include="logger.h" />
+    <ClInclude Include="MaidCat.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="RightMenu.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Wnd.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Character.cpp" />
-    <ClCompile Include="DesktopPet.cpp" />
+    <ClCompile Include="MaidCat.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="RightMenu.cpp" />
     <ClCompile Include="Wnd.cpp" />

@@ -5,14 +5,11 @@
 class Character
 {
 public:
-	Character(HWND hwnd,const TCHAR * pictureName);
-	~Character();
-	void Logic();
-	void Draw();
-private:
-	HBITMAP image;
-	BITMAP bm;
-	HDC hdcImage;
-	HDC device;
+	Character(HWND hwnd) :hwnd(hwnd) {}
+	virtual ~Character() {};
+	virtual void Logic() = 0;
+	virtual void Draw()= 0;
+protected:
+	HWND hwnd;
 };
 
