@@ -13,34 +13,37 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="头文件\stable">
+      <UniqueIdentifier>{d9542e18-06e4-435b-bcb1-a2b1d524016c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="header.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="targetver.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Resource.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="DesktopPet.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="logger.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Wnd.h">
+    <ClInclude Include="MaidCat.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Character.h">
-      <Filter>头文件</Filter>
+      <Filter>头文件\stable</Filter>
+    </ClInclude>
+    <ClInclude Include="DesktopPet.h">
+      <Filter>头文件\stable</Filter>
+    </ClInclude>
+    <ClInclude Include="header.h">
+      <Filter>头文件\stable</Filter>
+    </ClInclude>
+    <ClInclude Include="logger.h">
+      <Filter>头文件\stable</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>头文件\stable</Filter>
     </ClInclude>
     <ClInclude Include="RightMenu.h">
-      <Filter>头文件</Filter>
+      <Filter>头文件\stable</Filter>
     </ClInclude>
-    <ClInclude Include="MaidCat.h">
-      <Filter>头文件</Filter>
+    <ClInclude Include="targetver.h">
+      <Filter>头文件\stable</Filter>
+    </ClInclude>
+    <ClInclude Include="Wnd.h">
+      <Filter>头文件\stable</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -4,7 +4,7 @@
 #include "Character.h"
 #include "RightMenu.h"
 #include "logger.h"
-#include "Resource.h"
+
 
 template<typename T = Character>
 class DesktopPet
@@ -31,7 +31,7 @@ DesktopPet<T>::DesktopPet(HINSTANCE hInstance) :
 	m_msg()
 {
 	wnd = new Wnd(hInstance, 800, 600);
-	character = new T(wnd->GetHWND());
+	character = new T(wnd);
 	rightMenu = new RightMenu(wnd);
 }
 
@@ -74,20 +74,20 @@ bool DesktopPet<T>::Init()
 		close = true;
 		return true;
 		});
-	////äÖÈ¾
+	//////äÖÈ¾
 	wnd->RegisterWndProc(WM_PAINT, [this](auto hwnd, auto, auto) {
 		character->Draw();
 		return true;
 		});
-	//°´×¡¿ÉÍÏ×§
-	wnd->RegisterWndProc(WM_LBUTTONDOWN, [this](auto hwnd, auto, auto) {
+	////°´×¡¿ÉÍÏ×§
+	wnd->RegisterWndProc(WM_LBUTTONDOWN, [](auto hwnd, auto, auto) {
 		SendMessage(hwnd, WM_SYSCOMMAND, SC_MOVE | HTCAPTION, 0);
 		return true;
 		});
-	wnd->RegisterWndProc(WM_LBUTTONDBLCLK, [this](auto hwnd, auto, auto) {
-		Logger::Log(L"ÄãË«»÷ÁË", hwnd);
-		return true;
-		});
+	//wnd->RegisterWndProc(WM_LBUTTONDBLCLK, [](auto hwnd, auto, auto) {
+	//	Logger::Log(L"ÄãË«»÷ÁË", hwnd);
+	//	return true;
+	//	});
 	return true;
 }
 
@@ -104,6 +104,8 @@ void DesktopPet<T>::Loop()
 			}
 			TranslateMessage(&m_msg);
 			DispatchMessage(&m_msg);
+			character->Logic();
+			//character->Draw();
 		}
 	}
 }

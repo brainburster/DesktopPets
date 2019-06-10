@@ -1,15 +1,14 @@
 #pragma once
-#include <Windows.h>
 
 /*½ÇÉ«*/
 class Character
 {
 public:
-	Character(HWND hwnd) :hwnd(hwnd) {}
+	Character(class Wnd * wnd) :wnd(wnd) {}
 	virtual ~Character() {};
 	virtual void Logic() = 0;
 	virtual void Draw()= 0;
 protected:
-	HWND hwnd;
+	Wnd * wnd;
 };
 

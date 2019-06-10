@@ -82,5 +82,12 @@ LRESULT Wnd::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 void Wnd::RegisterWndProc(UINT message, std::function<bool(HWND, WPARAM, LPARAM)> wndProc)
 {
-	(*WndProcs)[message] = wndProc;
+	if ((*WndProcs).find(message)== (*WndProcs).end()) {
+		(*WndProcs)[message] = wndProc;
+	}
+	else {
+		//º¯ÊýºÏ²¢
+		auto lastFunc = (*WndProcs)[message];
+		(*WndProcs)[message] = [=](auto a, auto b, auto c){return lastFunc(a, b, c)&&wndProc(a, b, c); };
+	}
 }
