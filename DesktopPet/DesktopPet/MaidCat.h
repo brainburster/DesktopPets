@@ -1,7 +1,6 @@
 #pragma once
 #include "Character.h"
 #include <Windows.h>
-#include <thread>
 
 #define KEY_DOWN(vk_code)(GetAsyncKeyState(vk_code) & 0x8000)
 
@@ -20,6 +19,5 @@ private:
 	HDC device;
 
 	bool pick_up = false;
-	std::thread * sub_thread1 = nullptr;
 };
 

@@ -1,5 +1,7 @@
 #include "MaidCat.h"
 #include "Wnd.h"
+#include <thread>
+#include <chrono>
 
 MaidCat::MaidCat(Wnd * wnd):
 	Character(wnd)
@@ -15,8 +17,8 @@ MaidCat::MaidCat(Wnd * wnd):
 	SelectObject(hdcImage2, image2);
 	MoveWindow(wnd->GetHWND(), 0, 0, bm1.bmWidth, bm1.bmHeight, false);
 	Draw();
-	sub_thread1 = new std::thread([this](){
-			while (true)
+	auto thread1 = std::thread([this](){
+			while (this)
 			{
 				if (KEY_DOWN(VK_LBUTTON)) {
 					if (!pick_up) {
@@ -30,10 +32,10 @@ MaidCat::MaidCat(Wnd * wnd):
 						SendMessage(this->wnd->GetHWND(), WM_PAINT, 0, 0);
 					}
 				}
-				Sleep(20);
+				std::this_thread::sleep_for(std::chrono::milliseconds(10));
 			}
 		});
-	sub_thread1->detach();
+	thread1.detach();
 }
 
 MaidCat::~MaidCat()
@@ -42,7 +44,6 @@ MaidCat::~MaidCat()
 	DeleteDC(hdcImage2);
 	DeleteObject(image1);
 	DeleteObject(image2);
-	delete sub_thread1;
 }
 
 void MaidCat::Draw()
