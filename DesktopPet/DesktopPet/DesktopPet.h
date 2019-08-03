@@ -5,7 +5,6 @@
 #include "RightMenu.h"
 #include "logger.h"
 
-
 template<typename T = Character>
 class DesktopPet
 {
@@ -17,8 +16,8 @@ private:
 	bool Init();
 	void Loop();
 	
-	Wnd * wnd;
-	Character* character;
+	Wnd wnd;
+	T character;
 	RightMenu * rightMenu;
 
 	bool close;
@@ -28,18 +27,16 @@ private:
 template<typename T>
 DesktopPet<T>::DesktopPet(HINSTANCE hInstance) :
 	close(false),
+	wnd(hInstance, 800, 600),
+	character(&wnd),
 	m_msg()
 {
-	wnd = new Wnd(hInstance, 800, 600);
-	character = new T(wnd);
-	rightMenu = new RightMenu(wnd);
+	rightMenu = new RightMenu(&wnd);
 }
 
 template<typename T>
 DesktopPet<T>::~DesktopPet()
 {
-	delete wnd;
-	delete character;
 	delete rightMenu;
 }
 
@@ -70,21 +67,21 @@ bool DesktopPet<T>::Init()
 	}
 
 	//关闭
-	wnd->RegisterWndProc(WM_DESTROY, [this](auto hwnd, auto, auto) {
+	wnd.RegisterWndProc(WM_DESTROY, [this](auto hwnd, auto, auto) {
 		close = true;
 		return true;
 		});
 	//////渲染
-	wnd->RegisterWndProc(WM_PAINT, [this](auto hwnd, auto, auto) {
-		character->Draw();
+	wnd.RegisterWndProc(WM_PAINT, [this](auto hwnd, auto, auto) {
+		character.Draw();
 		return true;
 		});
 	////按住可拖拽
-	wnd->RegisterWndProc(WM_LBUTTONDOWN, [](auto hwnd, auto, auto) {
+	wnd.RegisterWndProc(WM_LBUTTONDOWN, [](auto hwnd, auto, auto) {
 		SendMessage(hwnd, WM_SYSCOMMAND, SC_MOVE | HTCAPTION, 0);
 		return true;
 		});
-	//wnd->RegisterWndProc(WM_LBUTTONDBLCLK, [](auto hwnd, auto, auto) {
+	//wnd.RegisterWndProc(WM_LBUTTONDBLCLK, [](auto hwnd, auto, auto) {
 	//	Logger::Log(L"你双击了", hwnd);
 	//	return true;
 	//	});
@@ -96,7 +93,7 @@ void DesktopPet<T>::Loop()
 {
 	while (!close)
 	{
-		if (PeekMessage(&m_msg, wnd->GetHWND(), 0, 0, PM_REMOVE))
+		if (PeekMessage(&m_msg, wnd.GetHWND(), 0, 0, PM_REMOVE))
 		{
 			if (m_msg.message == WM_QUIT)
 			{
@@ -104,8 +101,8 @@ void DesktopPet<T>::Loop()
 			}
 			TranslateMessage(&m_msg);
 			DispatchMessage(&m_msg);
-			character->Logic();
-			//character->Draw();
+			character.Logic();
+			//character.Draw();
 		}
 	}
 }
