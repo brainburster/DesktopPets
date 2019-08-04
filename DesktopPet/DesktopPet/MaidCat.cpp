@@ -2,6 +2,7 @@
 #include "Wnd.h"
 #include <thread>
 #include <chrono>
+#include "logger.h"
 
 MaidCat::MaidCat(Wnd * wnd):
 	Character(wnd)

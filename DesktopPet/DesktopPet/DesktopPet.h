@@ -81,10 +81,10 @@ bool DesktopPet<T>::Init()
 		SendMessage(hwnd, WM_SYSCOMMAND, SC_MOVE | HTCAPTION, 0);
 		return true;
 		});
-	//wnd.RegisterWndProc(WM_LBUTTONDBLCLK, [](auto hwnd, auto, auto) {
-	//	Logger::Log(L"ÄãË«»÷ÁË", hwnd);
-	//	return true;
-	//	});
+	wnd.RegisterWndProc(WM_LBUTTONDBLCLK, [](auto hwnd, auto, auto) {
+		Logger::Log(L"ÄãË«»÷ÁË", hwnd);
+		return true;
+		});
 	return true;
 }
 

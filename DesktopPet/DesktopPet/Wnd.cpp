@@ -1,7 +1,7 @@
 #include "Wnd.h"
 #include "Resource.h"
 
-std::unordered_map<UINT, std::function<bool(HWND, WPARAM, LPARAM)>> * Wnd::WndProcs = nullptr;
+std::unordered_map<UINT, std::function<bool(HWND, WPARAM, LPARAM)>> Wnd::WndProcs;
 
 Wnd::Wnd(HINSTANCE hInstance, int width, int height) : 
 	m_hInstance(hInstance),
@@ -10,7 +10,6 @@ Wnd::Wnd(HINSTANCE hInstance, int width, int height) :
 {
 	LoadStringW(hInstance, IDS_APP_TITLE, m_szTitle, 20);
 	LoadStringW(hInstance, IDC_DESKTOPPET, m_szWindowClass, 20);
-	WndProcs = new std::unordered_map<UINT, std::function<bool(HWND, WPARAM, LPARAM)>>(128);
 	
 	WNDCLASSEX wcex;
 	wcex.lpfnWndProc = Wnd::WndProc;
@@ -43,7 +42,7 @@ Wnd::Wnd(HINSTANCE hInstance, int width, int height) :
 
 	//修改窗口ex_style
 	LONG ex_style = ::GetWindowLong(m_hWnd, GWL_EXSTYLE);
-	ex_style = ex_style | WS_EX_LAYERED | WS_EX_LAYERED;/*| WS_EX_TOPMOST 创建后失效*/
+	ex_style = ex_style | WS_EX_LAYERED;/*| WS_EX_TOPMOST 创建后失效*/
 	SetWindowLong(m_hWnd, GWL_EXSTYLE, ex_style);
 	SetLayeredWindowAttributes(m_hWnd, 0xffffffff, 0, LWA_COLORKEY);
 	//置顶
@@ -55,10 +54,6 @@ Wnd::Wnd(HINSTANCE hInstance, int width, int height) :
 
 Wnd::~Wnd()
 {
-	if (WndProcs) {
-		delete WndProcs;
-		WndProcs = nullptr;
-	}
 }
 
 const HWND & Wnd::GetHWND() const
@@ -73,21 +68,20 @@ const HINSTANCE & Wnd::GetHInstance() const
 
 LRESULT Wnd::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-	if (WndProcs->find(message) != WndProcs->end()&& WndProcs->at(message)(hWnd, wParam, lParam))
+	if (WndProcs.find(message) != WndProcs.end()&& WndProcs.at(message)(hWnd, wParam, lParam))
 	{
 		return 0;
 	}
 	return DefWindowProc(hWnd, message, wParam, lParam);
 }
 
-void Wnd::RegisterWndProc(UINT message, std::function<bool(HWND, WPARAM, LPARAM)> wndProc)
+void Wnd::RegisterWndProc(UINT message, std::function<bool(HWND, WPARAM, LPARAM)>&& wndProc)
 {
-	if ((*WndProcs).find(message)== (*WndProcs).end()) {
-		(*WndProcs)[message] = wndProc;
+	if (WndProcs.find(message) == WndProcs.end()) {
+		WndProcs[message] = wndProc;
 	}
 	else {
-		//函数合并
-		auto lastFunc = (*WndProcs)[message];
-		(*WndProcs)[message] = [=](auto a, auto b, auto c){return lastFunc(a, b, c)&&wndProc(a, b, c); };
+		auto previous = std::move(WndProcs[message]);
+		WndProcs[message] = [=](auto a, auto b, auto c){return previous(a, b, c)&&wndProc(a, b, c); };
 	}
 }
