@@ -1,7 +1,7 @@
 #include "Wnd.h"
 #include "Resource.h"
 
-std::unordered_map<UINT, std::function<bool(HWND, WPARAM, LPARAM)>> Wnd::WndProcs;
+std::map<UINT, std::function<bool(HWND, WPARAM, LPARAM)>> Wnd::WndProcs;
 
 Wnd::Wnd(HINSTANCE hInstance, int width, int height) : 
 	m_hInstance(hInstance),
@@ -75,13 +75,23 @@ LRESULT Wnd::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	return DefWindowProc(hWnd, message, wParam, lParam);
 }
 
-void Wnd::RegisterWndProc(UINT message, std::function<bool(HWND, WPARAM, LPARAM)>&& wndProc)
+void Wnd::RegisterWndProc(UINT message,const std::function<bool(HWND, WPARAM, LPARAM)>& wndProc)
 {
 	if (WndProcs.find(message) == WndProcs.end()) {
 		WndProcs[message] = wndProc;
 	}
 	else {
 		auto previous = std::move(WndProcs[message]);
-		WndProcs[message] = [=](auto a, auto b, auto c){return previous(a, b, c)&&wndProc(a, b, c); };
+		WndProcs[message] = [previous,wndProc](auto a, auto b, auto c){return previous(a, b, c)&&wndProc(a, b, c); };
+	}
+}
+
+void Wnd::peekMessage()
+{
+	static MSG msg;
+	while(PeekMessage(&msg, m_hWnd, 0, 0, PM_REMOVE))
+	{
+		TranslateMessage(&msg);
+		DispatchMessage(&msg);
 	}
 }

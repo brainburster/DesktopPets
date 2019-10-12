@@ -1,7 +1,7 @@
 #pragma once
 #include <Windows.h>
-#include <unordered_map>
 #include <functional>
+#include <map>
 
 /*´°¿Ú*/
 class Wnd
@@ -12,9 +12,10 @@ public:
 
 	const HWND & GetHWND() const;
 	const HINSTANCE & GetHInstance() const;
-	static std::unordered_map<UINT, std::function<bool(HWND, WPARAM, LPARAM)>> WndProcs;
+	static std::map<UINT, std::function<bool(HWND, WPARAM, LPARAM)>> WndProcs;
 	static LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
-	void RegisterWndProc(UINT message,std::function<bool(HWND, WPARAM, LPARAM)> && wndProc);
+	void RegisterWndProc(UINT message,const std::function<bool(HWND, WPARAM, LPARAM)> & wndProc);
+	void peekMessage();
 private:
 	HINSTANCE m_hInstance;
 	TCHAR m_szTitle[20];

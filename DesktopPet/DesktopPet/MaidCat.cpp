@@ -4,6 +4,8 @@
 #include <chrono>
 #include "logger.h"
 
+#define KEY_DOWN(vk_code)(GetAsyncKeyState(vk_code) & 0x8000)
+
 MaidCat::MaidCat(Wnd * wnd):
 	Character(wnd)
 {
@@ -18,25 +20,14 @@ MaidCat::MaidCat(Wnd * wnd):
 	SelectObject(hdcImage2, image2);
 	MoveWindow(wnd->GetHWND(), 0, 0, bm1.bmWidth, bm1.bmHeight, false);
 	Draw();
-	auto thread1 = std::thread([this](){
-			while (this)
-			{
-				if (KEY_DOWN(VK_LBUTTON)) {
-					if (!pick_up) {
-						pick_up = true;
-						SendMessage(this->wnd->GetHWND(), WM_PAINT, 0, 0);
-					}
-				}
-				else {
-					if (pick_up) {
-						pick_up = false;
-						SendMessage(this->wnd->GetHWND(), WM_PAINT, 0, 0);
-					}
-				}
-				std::this_thread::sleep_for(std::chrono::milliseconds(10));
-			}
-		});
-	thread1.detach();
+	wnd->RegisterWndProc(WM_LBUTTONDOWN, [this](auto hwnd,auto wparam,auto lparam) {
+		if (!pick_up)
+		{
+			pick_up = true;
+			SendMessage(hwnd, WM_PAINT, 0, 0);
+		}
+		return true;
+	});
 }
 
 MaidCat::~MaidCat()
@@ -67,5 +58,12 @@ void MaidCat::Draw()
 
 void MaidCat::Logic()
 {
-	//Ã»Âß¼­
+	if (!KEY_DOWN(VK_LBUTTON))
+	{
+		if (pick_up)
+		{
+			pick_up = false;
+			SendMessage(wnd->GetHWND(), WM_PAINT, 0, 0);
+		}
+	}
 }

@@ -4,6 +4,7 @@
 #include "Character.h"
 #include "RightMenu.h"
 #include "logger.h"
+#include <time.h>
 
 template<typename T = Character>
 class DesktopPet
@@ -20,16 +21,14 @@ private:
 	T character;
 	RightMenu * rightMenu;
 
-	bool close;
-	MSG m_msg;
+	bool bCloseApp;
 };
 
 template<typename T>
 DesktopPet<T>::DesktopPet(HINSTANCE hInstance) :
-	close(false),
+	bCloseApp(false),
 	wnd(hInstance, 800, 600),
-	character(&wnd),
-	m_msg()
+	character(&wnd)
 {
 	rightMenu = new RightMenu(&wnd);
 }
@@ -47,7 +46,7 @@ int DesktopPet<T>::Run()
 		return 0;
 	}
 	Loop();
-	return m_msg.wParam;
+	return 0;
 }
 
 template<typename T>
@@ -68,7 +67,7 @@ bool DesktopPet<T>::Init()
 
 	//关闭
 	wnd.RegisterWndProc(WM_DESTROY, [this](auto hwnd, auto, auto) {
-		close = true;
+		bCloseApp = true;
 		return true;
 		});
 	//////渲染
@@ -80,29 +79,28 @@ bool DesktopPet<T>::Init()
 	wnd.RegisterWndProc(WM_LBUTTONDOWN, [](auto hwnd, auto, auto) {
 		SendMessage(hwnd, WM_SYSCOMMAND, SC_MOVE | HTCAPTION, 0);
 		return true;
-		});
-	wnd.RegisterWndProc(WM_LBUTTONDBLCLK, [](auto hwnd, auto, auto) {
-		Logger::Log(L"你双击了", hwnd);
-		return true;
-		});
+	});
 	return true;
 }
 
 template<typename T>
 void DesktopPet<T>::Loop()
 {
-	while (!close)
+	clock_t previous = clock();
+	clock_t lag = 0;
+	clock_t delay = 33;
+	while (!bCloseApp)
 	{
-		if (PeekMessage(&m_msg, wnd.GetHWND(), 0, 0, PM_REMOVE))
-		{
-			if (m_msg.message == WM_QUIT)
-			{
-				break;
-			}
-			TranslateMessage(&m_msg);
-			DispatchMessage(&m_msg);
+		wnd.peekMessage();
+		clock_t current = clock();
+		clock_t elapsed = current - previous;
+		previous = current;
+		lag += elapsed;
+		while (lag >= delay) {
 			character.Logic();
-			//character.Draw();
+			lag -= delay;
 		}
+		//character.Draw();
+		Sleep(1);//减少cpu占用
 	}
 }

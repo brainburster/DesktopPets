@@ -2,8 +2,6 @@
 #include "Character.h"
 #include <Windows.h>
 
-#define KEY_DOWN(vk_code)(GetAsyncKeyState(vk_code) & 0x8000)
-
 class MaidCat :
 	public Character
 {
