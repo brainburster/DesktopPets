@@ -33,9 +33,6 @@
     <ClInclude Include="logger.h">
       <Filter>头文件\stable</Filter>
     </ClInclude>
-    <ClInclude Include="Resource.h">
-      <Filter>头文件\stable</Filter>
-    </ClInclude>
     <ClInclude Include="RightMenu.h">
       <Filter>头文件\stable</Filter>
     </ClInclude>
@@ -43,6 +40,9 @@
       <Filter>头文件\stable</Filter>
     </ClInclude>
     <ClInclude Include="Wnd.h">
+      <Filter>头文件\stable</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
       <Filter>头文件\stable</Filter>
     </ClInclude>
   </ItemGroup>
@@ -56,6 +56,12 @@
       <Filter>资源文件</Filter>
     </Image>
     <Image Include="DesktopPet.ico">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="1.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="2.bmp">
       <Filter>资源文件</Filter>
     </Image>
   </ItemGroup>

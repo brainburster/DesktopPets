@@ -1,3 +1,4 @@
+#include "resource.h"
 #include "MaidCat.h"
 #include "Wnd.h"
 #include <thread>
@@ -12,13 +13,13 @@ MaidCat::MaidCat(Wnd * wnd):
 	device = GetDC(wnd->GetHWND());
 	hdcImage1 = CreateCompatibleDC(device);
 	hdcImage2 = CreateCompatibleDC(device);
-	image1 = (HBITMAP)LoadImage(0, L"1.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
-	image2 = (HBITMAP)LoadImage(0, L"2.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
+	image1 = LoadBitmap(wnd->GetHInstance(), MAKEINTRESOURCE(IDB_BITMAP1));
+	image2 = LoadBitmap(wnd->GetHInstance(), MAKEINTRESOURCE(IDB_BITMAP2));
 	GetObject(image1, sizeof(BITMAP), &bm1);
 	GetObject(image2, sizeof(BITMAP), &bm2);
 	SelectObject(hdcImage1, image1);
 	SelectObject(hdcImage2, image2);
-	MoveWindow(wnd->GetHWND(), 0, 0, bm1.bmWidth, bm1.bmHeight, false);
+	MoveWindow(wnd->GetHWND(), 0, 0, max(bm1.bmWidth,bm2.bmWidth), max(bm1.bmHeight,bm2.bmHeight), false);
 	Draw();
 	wnd->RegisterWndProc(WM_LBUTTONDOWN, [this](auto hwnd,auto wparam,auto lparam) {
 		if (!pick_up)
