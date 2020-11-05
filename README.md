@@ -9,4 +9,4 @@ c++,window,桌面宠物
 
 ![妹抖](./DesktopPet/DesktopPet/1.bmp)
 
-//![妹抖](./DesktopPet/DesktopPet/2.bmp)
+![妹抖](./DesktopPet/DesktopPet/2.bmp)
