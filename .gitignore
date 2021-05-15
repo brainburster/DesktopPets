@@ -35,3 +35,8 @@
 x64
 Release
 Debug
+
+/thirdParty/CubismSdkForNative-4-r.2/Core
+/thirdParty/CubismSdkForNative-4-r.2/Framework
+/thirdParty/CubismSdkForNative-4-r.2/Samples
+
