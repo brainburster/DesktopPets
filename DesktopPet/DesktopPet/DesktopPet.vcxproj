@@ -157,6 +157,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Character.h" />
+    <ClInclude Include="config.h" />
     <ClInclude Include="DesktopPet.h" />
     <ClInclude Include="header.h" />
     <ClInclude Include="logger.h" />

@@ -1,16 +1,16 @@
 #include "Wnd.h"
 #include "Resource.h"
 
-std::map<UINT, std::function<bool(HWND, WPARAM, LPARAM)>> Wnd::WndProcs;
+MSG_Table Wnd::msg_table;
 
-Wnd::Wnd(HINSTANCE hInstance, int width, int height) : 
+Wnd::Wnd(HINSTANCE hInstance, int width, int height) :
 	m_hInstance(hInstance),
 	m_width(width),
 	m_height(height)
 {
 	LoadStringW(hInstance, IDS_APP_TITLE, m_szTitle, 20);
 	LoadStringW(hInstance, IDC_DESKTOPPET, m_szWindowClass, 20);
-	
+
 	WNDCLASSEX wcex;
 	wcex.lpfnWndProc = Wnd::WndProc;
 	wcex.cbSize = sizeof(WNDCLASSEX);
@@ -32,12 +32,12 @@ Wnd::Wnd(HINSTANCE hInstance, int width, int height) :
 
 	if (!m_hWnd)
 	{
-		return ;
+		return;
 	}
 
 	//修改窗口style
 	LONG style = ::GetWindowLong(m_hWnd, GWL_STYLE);
-	style = style & ~WS_CAPTION &~WS_SYSMENU &~WS_SIZEBOX | SWP_NOSIZE; //| CS_OWNDC
+	style = style & ~WS_CAPTION & ~WS_SYSMENU & ~WS_SIZEBOX | SWP_NOSIZE; //| CS_OWNDC
 	SetWindowLong(m_hWnd, GWL_STYLE, style);
 
 	//修改窗口ex_style
@@ -56,40 +56,42 @@ Wnd::~Wnd()
 {
 }
 
-const HWND & Wnd::GetHWND() const
+const HWND& Wnd::GetHWND() const
 {
 	return m_hWnd;
 }
 
-const HINSTANCE & Wnd::GetHInstance() const
+const HINSTANCE& Wnd::GetHInstance() const
 {
 	return m_hInstance;
 }
 
 LRESULT Wnd::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-	if (WndProcs.find(message) != WndProcs.end()&& WndProcs.at(message)(hWnd, wParam, lParam))
+	const MSG_ID msg_id = { hWnd, message };
+	if (msg_table.find(msg_id) != msg_table.end() && msg_table.at(msg_id)(wParam, lParam))
 	{
 		return 0;
 	}
 	return DefWindowProc(hWnd, message, wParam, lParam);
 }
 
-void Wnd::RegisterWndProc(UINT message,const std::function<bool(HWND, WPARAM, LPARAM)>& wndProc)
+void Wnd::RegisterWndProc(UINT message, const MSG_Handler& wndProc)
 {
-	if (WndProcs.find(message) == WndProcs.end()) {
-		WndProcs[message] = wndProc;
+	const MSG_ID msg_id = { m_hWnd, message };
+	if (msg_table.find(msg_id) == msg_table.end()) {
+		msg_table[msg_id] = wndProc;
 	}
 	else {
-		auto previous = std::move(WndProcs[message]);
-		WndProcs[message] = [previous,wndProc](auto a, auto b, auto c){return previous(a, b, c)&&wndProc(a, b, c); };
+		auto previous = std::move(msg_table[msg_id]);
+		msg_table[msg_id] = [previous, wndProc](auto a, auto b) {return previous(a, b) && wndProc(a, b); };
 	}
 }
 
 void Wnd::peekMessage()
 {
 	static MSG msg;
-	while(PeekMessage(&msg, m_hWnd, 0, 0, PM_REMOVE))
+	while (PeekMessage(&msg, m_hWnd, 0, 0, PM_REMOVE))
 	{
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);

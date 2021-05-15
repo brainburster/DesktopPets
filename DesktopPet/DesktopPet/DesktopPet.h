@@ -4,6 +4,7 @@
 #include "Character.h"
 #include "RightMenu.h"
 #include "logger.h"
+#include "config.h"
 #include <time.h>
 
 template<typename T = Character>
@@ -16,10 +17,10 @@ public:
 private:
 	bool Init();
 	void Loop();
-	
+
 	Wnd wnd;
 	T character;
-	RightMenu * rightMenu;
+	RightMenu* rightMenu;
 
 	bool bCloseApp;
 };
@@ -27,7 +28,7 @@ private:
 template<typename T>
 DesktopPet<T>::DesktopPet(HINSTANCE hInstance) :
 	bCloseApp(false),
-	wnd(hInstance, 800, 600),
+	wnd(hInstance, config::Config::client_width, config::Config::client_height),
 	character(&wnd)
 {
 	rightMenu = new RightMenu(&wnd);
@@ -66,20 +67,20 @@ bool DesktopPet<T>::Init()
 	}
 
 	//关闭
-	wnd.RegisterWndProc(WM_DESTROY, [this](auto hwnd, auto, auto) {
+	wnd.RegisterWndProc(WM_DESTROY, [this](auto, auto) {
 		bCloseApp = true;
 		return true;
 		});
 	//////渲染
-	wnd.RegisterWndProc(WM_PAINT, [this](auto hwnd, auto, auto) {
+	wnd.RegisterWndProc(WM_PAINT, [this](auto, auto) {
 		character.Draw();
 		return true;
 		});
 	////按住可拖拽
-	wnd.RegisterWndProc(WM_LBUTTONDOWN, [](auto hwnd, auto, auto) {
-		SendMessage(hwnd, WM_SYSCOMMAND, SC_MOVE | HTCAPTION, 0);
+	wnd.RegisterWndProc(WM_LBUTTONDOWN, [this](auto, auto) {
+		SendMessage(wnd.GetHWND(), WM_SYSCOMMAND, SC_MOVE | HTCAPTION, 0);
 		return true;
-	});
+		});
 	return true;
 }
 
@@ -88,7 +89,7 @@ void DesktopPet<T>::Loop()
 {
 	clock_t previous = clock();
 	clock_t lag = 0;
-	clock_t delay = 33;
+	clock_t delay = 1000 / 30;
 	while (!bCloseApp)
 	{
 		wnd.peekMessage();

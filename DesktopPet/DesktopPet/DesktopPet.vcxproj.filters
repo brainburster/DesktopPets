@@ -45,6 +45,9 @@
     <ClInclude Include="resource.h">
       <Filter>头文件\stable</Filter>
     </ClInclude>
+    <ClInclude Include="config.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DesktopPet.rc">

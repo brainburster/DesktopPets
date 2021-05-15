@@ -4,9 +4,8 @@
 class RightMenu
 {
 public:
-	RightMenu(Wnd * wnd);
+	RightMenu(Wnd* wnd);
 	~RightMenu();
 private:
 	HMENU hMenu;
 };
-
