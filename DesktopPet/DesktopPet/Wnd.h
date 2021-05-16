@@ -23,8 +23,8 @@ public:
 	void peekMessage();
 private:
 	HINSTANCE m_hInstance;
-	TCHAR m_szTitle[20];
-	TCHAR m_szWindowClass[20];
+	char m_szTitle[20];
+	char m_szWindowClass[20];
 	HWND m_hWnd;
 
 	int m_height;

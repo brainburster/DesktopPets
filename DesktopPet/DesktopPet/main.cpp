@@ -3,18 +3,18 @@
 
 #include "header.h"
 #include "DesktopPet.h"
-#include "MaidCat.h"
+//#include "MaidCat.h"
+#include "MaidCatLive2D.h"
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
-                     _In_opt_ HINSTANCE hPrevInstance,
-                     _In_ LPWSTR    lpCmdLine,
-                     _In_ int       nCmdShow)
+	_In_opt_ HINSTANCE hPrevInstance,
+	_In_ LPWSTR    lpCmdLine,
+	_In_ int       nCmdShow)
 {
-    UNREFERENCED_PARAMETER(hPrevInstance);
-    UNREFERENCED_PARAMETER(lpCmdLine);
+	UNREFERENCED_PARAMETER(hPrevInstance);
+	UNREFERENCED_PARAMETER(lpCmdLine);
 
-	DesktopPet<MaidCat> desktopPet(hInstance);
+	DesktopPet<MaidCatLive2D> desktopPet(hInstance, 600, 800);
 
-    return desktopPet.Run();
+	return desktopPet.Run();
 }
-

@@ -16,6 +16,12 @@
     <Filter Include="头文件\stable">
       <UniqueIdentifier>{d9542e18-06e4-435b-bcb1-a2b1d524016c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件\Live2D">
+      <UniqueIdentifier>{c33cbc17-81df-4033-9589-b19754d49396}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\Live2D">
+      <UniqueIdentifier>{0a1fb952-5ac0-4474-9025-b2fd8f2d7ada}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MaidCat.h">
@@ -45,8 +51,41 @@
     <ClInclude Include="resource.h">
       <Filter>头文件\stable</Filter>
     </ClInclude>
-    <ClInclude Include="config.h">
+    <ClInclude Include="MaidCatLive2D.h">
       <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Live2d\LAppAllocator.hpp">
+      <Filter>头文件\Live2D</Filter>
+    </ClInclude>
+    <ClInclude Include="Live2d\LAppDefine.hpp">
+      <Filter>头文件\Live2D</Filter>
+    </ClInclude>
+    <ClInclude Include="Live2d\LAppDelegate.hpp">
+      <Filter>头文件\Live2D</Filter>
+    </ClInclude>
+    <ClInclude Include="Live2d\LAppLive2DManager.hpp">
+      <Filter>头文件\Live2D</Filter>
+    </ClInclude>
+    <ClInclude Include="Live2d\LAppModel.hpp">
+      <Filter>头文件\Live2D</Filter>
+    </ClInclude>
+    <ClInclude Include="Live2d\LAppPal.hpp">
+      <Filter>头文件\Live2D</Filter>
+    </ClInclude>
+    <ClInclude Include="Live2d\LAppSprite.hpp">
+      <Filter>头文件\Live2D</Filter>
+    </ClInclude>
+    <ClInclude Include="Live2d\LAppTextureManager.hpp">
+      <Filter>头文件\Live2D</Filter>
+    </ClInclude>
+    <ClInclude Include="Live2d\LAppView.hpp">
+      <Filter>头文件\Live2D</Filter>
+    </ClInclude>
+    <ClInclude Include="Live2d\LAppWavFileHandler.hpp">
+      <Filter>头文件\Live2D</Filter>
+    </ClInclude>
+    <ClInclude Include="Live2d\TouchManager.hpp">
+      <Filter>头文件\Live2D</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -59,12 +98,6 @@
       <Filter>资源文件</Filter>
     </Image>
     <Image Include="DesktopPet.ico">
-      <Filter>资源文件</Filter>
-    </Image>
-    <Image Include="1.bmp">
-      <Filter>资源文件</Filter>
-    </Image>
-    <Image Include="2.bmp">
       <Filter>资源文件</Filter>
     </Image>
   </ItemGroup>
@@ -80,6 +113,42 @@
     </ClCompile>
     <ClCompile Include="MaidCat.cpp">
       <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="MaidCatLive2D.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Live2d\LAppAllocator.cpp">
+      <Filter>源文件\Live2D</Filter>
+    </ClCompile>
+    <ClCompile Include="Live2d\LAppDefine.cpp">
+      <Filter>源文件\Live2D</Filter>
+    </ClCompile>
+    <ClCompile Include="Live2d\LAppDelegate.cpp">
+      <Filter>源文件\Live2D</Filter>
+    </ClCompile>
+    <ClCompile Include="Live2d\LAppLive2DManager.cpp">
+      <Filter>源文件\Live2D</Filter>
+    </ClCompile>
+    <ClCompile Include="Live2d\LAppModel.cpp">
+      <Filter>源文件\Live2D</Filter>
+    </ClCompile>
+    <ClCompile Include="Live2d\LAppPal.cpp">
+      <Filter>源文件\Live2D</Filter>
+    </ClCompile>
+    <ClCompile Include="Live2d\LAppSprite.cpp">
+      <Filter>源文件\Live2D</Filter>
+    </ClCompile>
+    <ClCompile Include="Live2d\LAppTextureManager.cpp">
+      <Filter>源文件\Live2D</Filter>
+    </ClCompile>
+    <ClCompile Include="Live2d\LAppView.cpp">
+      <Filter>源文件\Live2D</Filter>
+    </ClCompile>
+    <ClCompile Include="Live2d\LAppWavFileHandler.cpp">
+      <Filter>源文件\Live2D</Filter>
+    </ClCompile>
+    <ClCompile Include="Live2d\TouchManager.cpp">
+      <Filter>源文件\Live2D</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

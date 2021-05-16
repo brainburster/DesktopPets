@@ -50,7 +50,7 @@ RightMenu::RightMenu(Wnd* wnd)
 				});
 			break;
 		case ID_SETTING:
-			Logger::Log(L"还没做", wnd->GetHWND());
+			Logger::Log(TEXT("还没做"), wnd->GetHWND());
 			break;
 		case ID_QUIT:
 			SendMessage(wnd->GetHWND(), WM_CLOSE, NULL, NULL);

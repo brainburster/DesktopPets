@@ -5,9 +5,9 @@
 
 class Logger {
 public:
-	static void Log(std::wstring str,HWND hWnd = NULL) {
+	static void Log(std::string str, HWND hWnd = NULL) {
 #ifdef _DEBUG
-		MessageBox(hWnd, str.c_str(), L"Log", MB_OK);
+		MessageBox(hWnd, str.c_str(), TEXT("Log"), MB_OK);
 #endif // _DEBUG
 	}
 };

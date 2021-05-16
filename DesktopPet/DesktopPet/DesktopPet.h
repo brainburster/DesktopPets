@@ -4,14 +4,13 @@
 #include "Character.h"
 #include "RightMenu.h"
 #include "logger.h"
-#include "config.h"
 #include <time.h>
 
 template<typename T = Character>
 class DesktopPet
 {
 public:
-	DesktopPet(HINSTANCE hInstance);
+	DesktopPet(HINSTANCE hInstance, UINT x, UINT y);
 	~DesktopPet();
 	int Run();
 private:
@@ -26,9 +25,9 @@ private:
 };
 
 template<typename T>
-DesktopPet<T>::DesktopPet(HINSTANCE hInstance) :
+DesktopPet<T>::DesktopPet(HINSTANCE hInstance, UINT x, UINT y) :
 	bCloseApp(false),
-	wnd(hInstance, config::Config::client_width, config::Config::client_height),
+	wnd(hInstance, x, y),
 	character(&wnd)
 {
 	rightMenu = new RightMenu(&wnd);
@@ -54,7 +53,7 @@ template<typename T>
 bool DesktopPet<T>::Init()
 {
 	//只允许存在一个实例
-	auto flag = CreateMutex(NULL, TRUE, L"DesktopPet");
+	auto flag = CreateMutex(NULL, TRUE, TEXT("DesktopPet"));
 	auto err = GetLastError();
 	if (err == ERROR_ALREADY_EXISTS)
 	{
@@ -71,12 +70,12 @@ bool DesktopPet<T>::Init()
 		bCloseApp = true;
 		return true;
 		});
-	//////渲染
+	//渲染
 	wnd.RegisterWndProc(WM_PAINT, [this](auto, auto) {
 		character.Draw();
 		return true;
 		});
-	////按住可拖拽
+	//按住可拖拽
 	wnd.RegisterWndProc(WM_LBUTTONDOWN, [this](auto, auto) {
 		SendMessage(wnd.GetHWND(), WM_SYSCOMMAND, SC_MOVE | HTCAPTION, 0);
 		return true;
@@ -101,7 +100,7 @@ void DesktopPet<T>::Loop()
 			character.Logic();
 			lag -= delay;
 		}
-		//character.Draw();
+		character.Draw();
 		Sleep(1);//减少cpu占用
 	}
 }

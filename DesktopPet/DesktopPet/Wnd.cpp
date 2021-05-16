@@ -8,8 +8,8 @@ Wnd::Wnd(HINSTANCE hInstance, int width, int height) :
 	m_width(width),
 	m_height(height)
 {
-	LoadStringW(hInstance, IDS_APP_TITLE, m_szTitle, 20);
-	LoadStringW(hInstance, IDC_DESKTOPPET, m_szWindowClass, 20);
+	LoadString(hInstance, IDS_APP_TITLE, m_szTitle, 20);
+	LoadString(hInstance, IDC_DESKTOPPET, m_szWindowClass, 20);
 
 	WNDCLASSEX wcex;
 	wcex.lpfnWndProc = Wnd::WndProc;
@@ -21,7 +21,7 @@ Wnd::Wnd(HINSTANCE hInstance, int width, int height) :
 	wcex.hIcon = LoadIcon(m_hInstance, MAKEINTRESOURCE(IDI_DESKTOPPET));
 	wcex.hCursor = LoadCursor(nullptr, IDC_ARROW);
 	wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
-	wcex.lpszMenuName = MAKEINTRESOURCEW(IDI_DESKTOPPET);
+	wcex.lpszMenuName = MAKEINTRESOURCE(IDI_DESKTOPPET);
 	wcex.lpszClassName = m_szTitle;
 	wcex.hIconSm = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
 	RegisterClassEx(&wcex);
@@ -44,7 +44,7 @@ Wnd::Wnd(HINSTANCE hInstance, int width, int height) :
 	LONG ex_style = ::GetWindowLong(m_hWnd, GWL_EXSTYLE);
 	ex_style = ex_style | WS_EX_LAYERED;/*| WS_EX_TOPMOST 创建后失效*/
 	SetWindowLong(m_hWnd, GWL_EXSTYLE, ex_style);
-	SetLayeredWindowAttributes(m_hWnd, 0xffffffff, 0, LWA_COLORKEY);
+	SetLayeredWindowAttributes(m_hWnd, 0, 0, LWA_COLORKEY);
 	//置顶
 	SetWindowPos(m_hWnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
 

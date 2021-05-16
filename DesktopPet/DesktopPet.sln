@@ -1,26 +1,26 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.329
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31229.75
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DesktopPet", "DesktopPet\DesktopPet.vcxproj", "{7BE77CA3-6D7D-462B-ACD5-861467BA8CB4}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Framework", "..\thirdParty\CubismSdkForNative-4-r.2\Samples\D3D11\Demo\proj.d3d11.cmake\build\proj_msvc2019_x64_mt\Framework\Framework.vcxproj", "{7F71D8CE-2BA5-3433-A8C4-A9C494058FB8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
-		Debug|x86 = Debug|x86
 		Release|x64 = Release|x64
-		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{7BE77CA3-6D7D-462B-ACD5-861467BA8CB4}.Debug|x64.ActiveCfg = Debug|x64
 		{7BE77CA3-6D7D-462B-ACD5-861467BA8CB4}.Debug|x64.Build.0 = Debug|x64
-		{7BE77CA3-6D7D-462B-ACD5-861467BA8CB4}.Debug|x86.ActiveCfg = Debug|Win32
-		{7BE77CA3-6D7D-462B-ACD5-861467BA8CB4}.Debug|x86.Build.0 = Debug|Win32
 		{7BE77CA3-6D7D-462B-ACD5-861467BA8CB4}.Release|x64.ActiveCfg = Release|x64
 		{7BE77CA3-6D7D-462B-ACD5-861467BA8CB4}.Release|x64.Build.0 = Release|x64
-		{7BE77CA3-6D7D-462B-ACD5-861467BA8CB4}.Release|x86.ActiveCfg = Release|Win32
-		{7BE77CA3-6D7D-462B-ACD5-861467BA8CB4}.Release|x86.Build.0 = Release|Win32
+		{7F71D8CE-2BA5-3433-A8C4-A9C494058FB8}.Debug|x64.ActiveCfg = Debug|x64
+		{7F71D8CE-2BA5-3433-A8C4-A9C494058FB8}.Debug|x64.Build.0 = Debug|x64
+		{7F71D8CE-2BA5-3433-A8C4-A9C494058FB8}.Release|x64.ActiveCfg = Release|x64
+		{7F71D8CE-2BA5-3433-A8C4-A9C494058FB8}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
