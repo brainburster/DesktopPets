@@ -6,18 +6,34 @@
 			"maid_cat3.2048/texture_00.png"
 		],
 		"Physics": "maid_cat3.physics3.json",
-		"DisplayInfo": "maid_cat3.cdi3.json"
+		"DisplayInfo": "maid_cat3.cdi3.json",
+		"Motions": {
+			"Idle": [
+				{
+					"File": "motions/IDEL.motion3.json"
+				},
+				{
+					"File": "motions/IDEL2.motion3.json"
+				}
+			]
+		}
 	},
 	"Groups": [
 		{
 			"Target": "Parameter",
 			"Name": "EyeBlink",
-			"Ids": []
+			"Ids": [
+				"ParamEyeLOpen",
+				"ParamEyeROpen"
+			]
 		},
 		{
 			"Target": "Parameter",
 			"Name": "LipSync",
-			"Ids": []
+			"Ids": [
+				"ParamMouthOpenY"
+			]
 		}
-	]
+	],
+	"HitAreas": []
 }

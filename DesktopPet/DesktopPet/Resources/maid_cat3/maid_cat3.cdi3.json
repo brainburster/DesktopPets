@@ -189,10 +189,6 @@
 	],
 	"CombinedParameters": [
 		[
-			"ParamAngleX",
-			"ParamAngleY"
-		],
-		[
 			"ParamEyeBallX",
 			"ParamEyeBallY"
 		],
