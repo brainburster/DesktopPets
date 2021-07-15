@@ -8,7 +8,6 @@ using MSG_ID = std::tuple<HWND, UINT>;
 using MSG_Handler = std::function<bool(WPARAM, LPARAM)>;
 using MSG_Table = std::map<MSG_ID, MSG_Handler>;
 
-/*´°¿Ú*/
 class Wnd
 {
 public:

@@ -1,6 +1,5 @@
 #pragma once
 
-/*½ÇÉ«*/
 class Character
 {
 public:

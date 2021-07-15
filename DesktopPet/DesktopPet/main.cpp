@@ -14,7 +14,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	UNREFERENCED_PARAMETER(hPrevInstance);
 	UNREFERENCED_PARAMETER(lpCmdLine);
 
-	DesktopPet<MaidCatLive2D> desktopPet(hInstance, 600, 800);
+	DesktopPet<MaidCatLive2D> desktopPet(hInstance, 300, 400);
 
 	return desktopPet.Run();
 }
