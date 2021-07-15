@@ -179,6 +179,9 @@ private:
 	DXGI_SWAP_CHAIN_DESC    _presentParameters; ///< プレゼントパラメータ
 
 	ID3D11RenderTargetView* _renderTargetView;  ///< 描画ターゲットビュー
+	ID3D11UnorderedAccessView* _uavPostBuffer;
+	ID3D11Texture2D* _postBuffer;
+	ID3D11Texture2D* _backBuffer;
 	ID3D11Texture2D* _depthTexture;      ///< Zバッファ
 	ID3D11DepthStencilView* _depthStencilView;  ///< Zバッファビュー
 	ID3D11DepthStencilState* _depthState;       ///< スプライト描画用深度オブジェクト
@@ -190,4 +193,6 @@ private:
 	ID3D11PixelShader* _pixelShader;   ///< スプライト描画シェーダ
 	ID3D11BlendState* _blendState;    ///< スプライト描画用ブレンドステート
 	ID3D11InputLayout* _vertexFormat;  ///< スプライト描画用型宣言
+
+	ID3D11ComputeShader* _postProcessingShader;
 };

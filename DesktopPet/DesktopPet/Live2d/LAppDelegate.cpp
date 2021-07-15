@@ -172,19 +172,57 @@ bool LAppDelegate::CreateRenderTarget(UINT width, UINT height)
 
 	HRESULT hr;
 	// レンダーターゲットビュー作成
-	ID3D11Texture2D* backBuffer;
-	hr = _swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&backBuffer);
+	//ID3D11Texture2D* backBuffer;
+	hr = _swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&_backBuffer);
 	if (FAILED(hr))
 	{
 		LAppPal::PrintLog("Fail SwapChain GetBuffer 0x%x", hr);
 		return false;
 	}
-	hr = _device->CreateRenderTargetView(backBuffer, NULL, &_renderTargetView);
-	// Getした分はRelease
-	backBuffer->Release();
+
+	//hr = _device->CreateRenderTargetView(_backBuffer, NULL, &_renderTargetView);
+
+	D3D11_TEXTURE2D_DESC post_buffer_desc{};
+	post_buffer_desc.Width = width;
+	post_buffer_desc.Height = height;
+	post_buffer_desc.MipLevels = 1;
+	post_buffer_desc.ArraySize = 1;
+	post_buffer_desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	post_buffer_desc.Usage = D3D11_USAGE_DEFAULT;
+	post_buffer_desc.BindFlags = D3D11_BIND_UNORDERED_ACCESS | D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET;
+	post_buffer_desc.CPUAccessFlags = 0;
+	post_buffer_desc.MiscFlags = 0;
+	post_buffer_desc.SampleDesc.Count = 1;
+	post_buffer_desc.SampleDesc.Quality = 0;
+
+	hr = _device->CreateTexture2D(&post_buffer_desc, 0, &_postBuffer);
+
+	if (FAILED(hr))
+	{
+		LAppPal::PrintLog("Fail Create Post Buffer 0x%x", hr);
+		return false;
+	}
+
+	hr = _device->CreateRenderTargetView(_postBuffer, NULL, &_renderTargetView);
+
+	//
+// Getした分はRelease
+//backBuffer->Release();
 	if (FAILED(hr))
 	{
 		LAppPal::PrintLog("Fail CreateRenderTargetView 0x%x", hr);
+		return false;
+	}
+
+	D3D11_UNORDERED_ACCESS_VIEW_DESC uav_desc = {};
+	uav_desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	uav_desc.ViewDimension = D3D11_UAV_DIMENSION_TEXTURE2D;
+
+	hr = _device->CreateUnorderedAccessView(_postBuffer, &uav_desc, &_uavPostBuffer);
+
+	if (FAILED(hr))
+	{
+		LAppPal::PrintLog("Fail Create RenderBuffer Buffer UAV 0x%x", hr);
 		return false;
 	}
 
@@ -255,6 +293,25 @@ void LAppDelegate::Release()
 		_renderTargetView->Release();
 		_renderTargetView = NULL;
 	}
+
+	if (_uavPostBuffer)
+	{
+		_uavPostBuffer->Release();
+		_uavPostBuffer = NULL;
+	}
+
+	if (_postBuffer)
+	{
+		_postBuffer->Release();
+		_postBuffer = NULL;
+	}
+
+	if (_backBuffer)
+	{
+		_backBuffer->Release();
+		_backBuffer = NULL;
+	}
+
 	if (_depthState)
 	{
 		_depthState->Release();
@@ -293,7 +350,7 @@ void LAppDelegate::Release()
 
 void LAppDelegate::Run()
 {
-	MSG msg;
+	MSG msg{};
 
 	do
 	{
@@ -499,6 +556,62 @@ bool LAppDelegate::CreateShader()
 		}
 	} while (0);
 
+	ID3DBlob* CSError = NULL;
+	ID3DBlob* CSBlob = NULL;
+
+#define STR(...) #__VA_ARGS__
+
+	static const char* cs_shader_str = STR(
+		RWTexture2D<float4> tex_out : register(u0);
+
+	[numthreads(8, 8, 1)]
+	void CSMain(uint3 DTid : SV_DispatchThreadID)
+	{
+		if (tex_out[DTid.xy].a < 0.85f && tex_out[DTid.xy].a>0.0001f)
+		{
+			tex_out[DTid.xy] = float4(0, 0, 0, 0);
+		}
+	}
+	);
+
+	hr = D3DCompile(
+		cs_shader_str,
+		strlen(cs_shader_str),
+		NULL,
+		NULL,
+		NULL,
+		"CSMain",
+		"cs_5_0",
+		0,
+		0,
+		&CSBlob,
+		&CSError);
+
+	if (FAILED(hr))
+	{
+		LAppPal::PrintLog("Fail Compile Compute Shader");
+		return false;
+	}
+
+	hr = _device->CreateComputeShader(CSBlob->GetBufferPointer(), CSBlob->GetBufferSize(), NULL, &_postProcessingShader);
+
+	if (FAILED(hr))
+	{
+		LAppPal::PrintLog("Fail Create Compute Shader");
+		return false;
+	}
+
+	if (CSBlob)
+	{
+		CSBlob->Release();
+		CSBlob = NULL;
+	}
+	if (CSError)
+	{
+		CSError->Release();
+		CSError = NULL;
+	}
+
 	if (pixelError)
 	{
 		pixelError->Release();
@@ -604,6 +717,11 @@ void LAppDelegate::ReleaseShader()
 		_vertexShader->Release();
 		_vertexShader = NULL;
 	}
+	if (_postProcessingShader)
+	{
+		_postProcessingShader->Release();
+		_postProcessingShader = NULL;
+	}
 }
 
 void LAppDelegate::SetMouse(float x, float y)
@@ -627,6 +745,33 @@ void LAppDelegate::Frame()
 
 	// 描画
 	_view->Render();
+
+	//
+	D3D11_QUERY_DESC pQueryDesc;
+	pQueryDesc.Query = D3D11_QUERY_EVENT;
+	pQueryDesc.MiscFlags = 0;
+	ID3D11Query* pEventQuery;
+	_device->CreateQuery(&pQueryDesc, &pEventQuery);
+
+	if (!pEventQuery) { return; }
+
+	_deviceContext->CSSetShader(_postProcessingShader, 0, 0);
+	_deviceContext->CSSetUnorderedAccessViews(0, 1, &_uavPostBuffer, 0);
+
+	_deviceContext->End(pEventQuery);
+	while (_deviceContext->GetData(pEventQuery, NULL, 0, 0) == S_FALSE) {}
+
+	_deviceContext->Dispatch(LAppDefine::RenderTargetWidth / 8, LAppDefine::RenderTargetHeight / 8, 1);
+
+	_deviceContext->End(pEventQuery);
+	while (_deviceContext->GetData(pEventQuery, NULL, 0, 0) == S_FALSE) {}
+
+	_deviceContext->CopyResource(_backBuffer, _postBuffer);
+
+	_deviceContext->End(pEventQuery);
+	while (_deviceContext->GetData(pEventQuery, NULL, 0, 0) == S_FALSE) {}
+
+	pEventQuery->Release();
 
 	// フレーム末端処理
 	EndFrame();
