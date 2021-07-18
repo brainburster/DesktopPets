@@ -746,32 +746,33 @@ void LAppDelegate::Frame()
 	// 描画
 	_view->Render();
 
-	//
-	D3D11_QUERY_DESC pQueryDesc;
-	pQueryDesc.Query = D3D11_QUERY_EVENT;
-	pQueryDesc.MiscFlags = 0;
-	ID3D11Query* pEventQuery;
-	_device->CreateQuery(&pQueryDesc, &pEventQuery);
+	auto fence = [&]() {
+		D3D11_QUERY_DESC pQueryDesc;
+		pQueryDesc.Query = D3D11_QUERY_EVENT;
+		pQueryDesc.MiscFlags = 0;
+		ID3D11Query* pEventQuery;
+		_device->CreateQuery(&pQueryDesc, &pEventQuery);
 
-	if (!pEventQuery) { return; }
+		if (!pEventQuery) { return; }
+
+		_deviceContext->End(pEventQuery);
+		while (_deviceContext->GetData(pEventQuery, NULL, 0, 0) == S_FALSE) {}
+
+		pEventQuery->Release();
+	};
 
 	_deviceContext->CSSetShader(_postProcessingShader, 0, 0);
 	_deviceContext->CSSetUnorderedAccessViews(0, 1, &_uavPostBuffer, 0);
 
-	_deviceContext->End(pEventQuery);
-	while (_deviceContext->GetData(pEventQuery, NULL, 0, 0) == S_FALSE) {}
+	fence();
 
 	_deviceContext->Dispatch(LAppDefine::RenderTargetWidth / 8, LAppDefine::RenderTargetHeight / 8, 1);
 
-	_deviceContext->End(pEventQuery);
-	while (_deviceContext->GetData(pEventQuery, NULL, 0, 0) == S_FALSE) {}
+	fence();
 
 	_deviceContext->CopyResource(_backBuffer, _postBuffer);
 
-	_deviceContext->End(pEventQuery);
-	while (_deviceContext->GetData(pEventQuery, NULL, 0, 0) == S_FALSE) {}
-
-	pEventQuery->Release();
+	fence();
 
 	// フレーム末端処理
 	EndFrame();
