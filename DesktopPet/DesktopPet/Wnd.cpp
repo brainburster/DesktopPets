@@ -11,7 +11,7 @@ Wnd::Wnd(HINSTANCE hInstance, int width, int height) :
 	LoadString(hInstance, IDS_APP_TITLE, m_szTitle, 20);
 	LoadString(hInstance, IDC_DESKTOPPET, m_szWindowClass, 20);
 
-	WNDCLASSEX wcex;
+	WNDCLASSEX wcex{};
 	wcex.lpfnWndProc = Wnd::WndProc;
 	wcex.cbSize = sizeof(WNDCLASSEX);
 	wcex.style = CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS;
@@ -20,7 +20,7 @@ Wnd::Wnd(HINSTANCE hInstance, int width, int height) :
 	wcex.hInstance = m_hInstance;
 	wcex.hIcon = LoadIcon(m_hInstance, MAKEINTRESOURCE(IDI_DESKTOPPET));
 	wcex.hCursor = LoadCursor(nullptr, IDC_ARROW);
-	wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
+	wcex.hbrBackground = 0;// (HBRUSH)(COLOR_WINDOW + 1);
 	wcex.lpszMenuName = MAKEINTRESOURCE(IDI_DESKTOPPET);
 	wcex.lpszClassName = m_szTitle;
 	wcex.hIconSm = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
@@ -83,7 +83,7 @@ void Wnd::RegisterWndProc(UINT message, const MSG_Handler& wndProc)
 		msg_table[msg_id] = wndProc;
 	}
 	else {
-		auto previous = std::move(msg_table[msg_id]);
+		const auto& previous = msg_table[msg_id];
 		msg_table[msg_id] = [previous, wndProc](auto a, auto b) {return previous(a, b) && wndProc(a, b); };
 	}
 }

@@ -3,6 +3,7 @@
 #include "Live2d\LAppDelegate.hpp"
 #include "Live2d\LAppPal.hpp"
 #include "Live2d\LAppView.hpp"
+
 class MaidCatLive2D::Impl
 {
 };
@@ -16,7 +17,7 @@ MaidCatLive2D::MaidCatLive2D(Wnd* wnd) :Character(wnd), pImpl{ std::make_unique<
 		LAppDelegate::ReleaseInstance();
 		return;
 	}
-	wnd->RegisterWndProc(WM_PAINT, [wnd](auto, auto) {ValidateRect(wnd->GetHWND(), NULL); return true; });
+
 	wnd->RegisterWndProc(WM_LBUTTONDOWN, [](auto wParam, auto lParam) {
 		auto lapp_delegate = LAppDelegate::GetInstance();
 		if (lapp_delegate != NULL)
@@ -57,6 +58,7 @@ MaidCatLive2D::MaidCatLive2D(Wnd* wnd) :Character(wnd), pImpl{ std::make_unique<
 		}
 		return true;
 		});
+
 	wnd->RegisterWndProc(WM_MOUSEMOVE, [wnd](auto, auto lParam) {
 		auto lapp_delegate = LAppDelegate::GetInstance();
 		if (lapp_delegate != NULL)

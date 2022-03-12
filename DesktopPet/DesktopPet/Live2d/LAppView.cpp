@@ -132,20 +132,20 @@ void LAppView::Render()
 	live2DManager->OnUpdate();
 
 	// 各モデルが持つ描画ターゲットをテクスチャとする場合
-	if (_renderTarget == SelectTarget_ModelFrameBuffer && _renderSprite)
-	{
-		for (csmUint32 i = 0; i < live2DManager->GetModelNum(); i++)
-		{
-			float alpha = GetSpriteAlpha(i); // サンプルとしてαに適当な差をつける
-			_renderSprite->SetColor(1.0f, 1.0f, 1.0f, alpha);
+	//if (_renderTarget == SelectTarget_ModelFrameBuffer && _renderSprite)
+	//{
+	//	for (csmUint32 i = 0; i < live2DManager->GetModelNum(); i++)
+	//	{
+	//		float alpha = GetSpriteAlpha(i); // サンプルとしてαに適当な差をつける
+	//		_renderSprite->SetColor(1.0f, 1.0f, 1.0f, alpha);
 
-			LAppModel* model = live2DManager->GetModel(i);
-			if (model)
-			{
-				_renderSprite->RenderImmidiate(width, height, model->GetRenderBuffer().GetTextureView());
-			}
-		}
-	}
+	//		LAppModel* model = live2DManager->GetModel(i);
+	//		if (model)
+	//		{
+	//			_renderSprite->RenderImmidiate(width, height, model->GetRenderBuffer().GetTextureView());
+	//		}
+	//	}
+	//}
 }
 
 void LAppView::InitializeSprite()

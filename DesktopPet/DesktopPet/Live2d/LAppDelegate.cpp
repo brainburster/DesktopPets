@@ -562,13 +562,12 @@ bool LAppDelegate::CreateShader()
 #define STR(...) #__VA_ARGS__
 
 	static const char* cs_shader_str = STR(
-		RWTexture2D<float4> tex_out : register(u0);
+	RWTexture2D<float4> tex_out : register(u0);
 
-	[numthreads(8, 8, 1)]
+	[numthreads(32, 32, 1)]
 	void CSMain(uint3 DTid : SV_DispatchThreadID)
 	{
-		if (tex_out[DTid.xy].a < 0.85f && tex_out[DTid.xy].a>0.0001f)
-		{
+		if (tex_out[DTid.xy].a < 0.65f && tex_out[DTid.xy].a>0.0001f){
 			tex_out[DTid.xy] = float4(0, 0, 0, 0);
 		}
 	}
@@ -678,7 +677,7 @@ void LAppDelegate::SetupShader()
 	_deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	_deviceContext->IASetInputLayout(_vertexFormat);
 
-	D3D11_VIEWPORT viewport;
+	D3D11_VIEWPORT viewport{};
 	viewport.TopLeftX = 0;
 	viewport.TopLeftY = 0;
 	viewport.Width = static_cast<FLOAT>(windowWidth);
@@ -747,7 +746,7 @@ void LAppDelegate::Frame()
 	_view->Render();
 
 	auto fence = [&]() {
-		D3D11_QUERY_DESC pQueryDesc;
+		D3D11_QUERY_DESC pQueryDesc{};
 		pQueryDesc.Query = D3D11_QUERY_EVENT;
 		pQueryDesc.MiscFlags = 0;
 		ID3D11Query* pEventQuery;
@@ -766,7 +765,7 @@ void LAppDelegate::Frame()
 
 	fence();
 
-	_deviceContext->Dispatch(LAppDefine::RenderTargetWidth / 8, LAppDefine::RenderTargetHeight / 8, 1);
+	_deviceContext->Dispatch(LAppDefine::RenderTargetWidth / 32, LAppDefine::RenderTargetHeight / 32, 1);
 
 	fence();
 

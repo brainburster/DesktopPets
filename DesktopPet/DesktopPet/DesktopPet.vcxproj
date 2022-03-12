@@ -95,9 +95,9 @@
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(ProjectDir)Output\bin\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(ProjectDir)Output\Intermediate\$(Platform)\$(Configuration)\</IntDir>
-    <IncludePath>D:\git\DesktopPets\thirdParty\CubismSdkForNative-4-r.2\Samples\D3D11\thirdParty\DirectXTK\Inc;D:\git\DesktopPets\thirdParty\CubismSdkForNative-4-r.2\Core\include;D:\git\DesktopPets\thirdParty\CubismSdkForNative-4-r.2\Framework\src;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)..\thirdParty\CubismSdkForNative-4-r.2\Samples\D3D11\thirdParty\DirectXTK\Inc;$(SolutionDir)..\thirdParty\CubismSdkForNative-4-r.2\Core\include;$(SolutionDir)..\thirdParty\CubismSdkForNative-4-r.2\Framework\src;$(IncludePath)</IncludePath>
     <ReferencePath>$(ReferencePath)</ReferencePath>
-    <LibraryPath>D:\git\DesktopPets\thirdParty\CubismSdkForNative-4-r.2\Core\lib\windows\x86_64\142;D:\git\DesktopPets\thirdParty\CubismSdkForNative-4-r.2\Samples\D3D11\thirdParty\DirectXTK\Bin\Desktop_2019\x64\Release;D:\git\DesktopPets\thirdParty\CubismSdkForNative-4-r.2\Samples\D3D11\Demo\proj.d3d11.cmake\build\proj_msvc2019_x64_mt\Framework\Release;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)..\thirdParty\CubismSdkForNative-4-r.2\Core\lib\windows\x86_64\142;$(SolutionDir)..\thirdParty\CubismSdkForNative-4-r.2\Samples\D3D11\thirdParty\DirectXTK\Bin\Desktop_2019\x64\Release;$(SolutionDir)..\thirdParty\CubismSdkForNative-4-r.2\Samples\D3D11\Demo\proj.d3d11.cmake\build\proj_msvc2019_x64_mt\Framework\Release;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
