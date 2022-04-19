@@ -1,4 +1,4 @@
-#include "Wnd.h"
+Ôªø#include "Wnd.h"
 #include "Resource.h"
 
 MSG_Table Wnd::msg_table;
@@ -25,8 +25,8 @@ Wnd::Wnd(HINSTANCE hInstance, int width, int height) :
 	wcex.lpszClassName = m_szTitle;
 	wcex.hIconSm = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
 	RegisterClassEx(&wcex);
-	//¥¥Ω®¥∞ø⁄
-	m_hWnd = CreateWindowEx(WS_EX_APPWINDOW, m_szTitle, m_szWindowClass, WS_POPUP,
+	//ÂàõÂª∫Á™óÂè£
+	m_hWnd = CreateWindowEx(WS_EX_APPWINDOW /*| WS_EX_LAYERED*/ | WS_EX_NOREDIRECTIONBITMAP, m_szTitle, m_szWindowClass, WS_POPUP & ~WS_CAPTION & ~WS_SYSMENU & ~WS_SIZEBOX | SWP_NOSIZE,
 		GetSystemMetrics(SM_CXSCREEN) / 2 - m_width / 2, GetSystemMetrics(SM_CYSCREEN) / 2 - m_height / 2,
 		m_width, m_height, NULL, NULL, m_hInstance, 0);
 
@@ -35,20 +35,24 @@ Wnd::Wnd(HINSTANCE hInstance, int width, int height) :
 		return;
 	}
 
-	//–ﬁ∏ƒ¥∞ø⁄style
-	LONG style = ::GetWindowLong(m_hWnd, GWL_STYLE);
-	style = style & ~WS_CAPTION & ~WS_SYSMENU & ~WS_SIZEBOX | SWP_NOSIZE; //| CS_OWNDC
-	SetWindowLong(m_hWnd, GWL_STYLE, style);
+	////‰øÆÊîπÁ™óÂè£style
+	//LONG style = ::GetWindowLong(m_hWnd, GWL_STYLE);
+	//style = style & ~WS_CAPTION & ~WS_SYSMENU & ~WS_SIZEBOX | SWP_NOSIZE; //| CS_OWNDC
+	//SetWindowLong(m_hWnd, GWL_STYLE, style);
 
-	//–ﬁ∏ƒ¥∞ø⁄ex_style
-	LONG ex_style = ::GetWindowLong(m_hWnd, GWL_EXSTYLE);
-	ex_style = ex_style | WS_EX_LAYERED;/*| WS_EX_TOPMOST ¥¥Ω®∫Û ß–ß*/
-	SetWindowLong(m_hWnd, GWL_EXSTYLE, ex_style);
-	SetLayeredWindowAttributes(m_hWnd, 0, 0, LWA_COLORKEY);
-	//÷√∂•
-	SetWindowPos(m_hWnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+	////‰øÆÊîπÁ™óÂè£ex_style
+	//LONG ex_style = ::GetWindowLong(m_hWnd, GWL_EXSTYLE);
+	//ex_style = ex_style | WS_EX_LAYERED;/*| WS_EX_TOPMOST ÂàõÂª∫ÂêéÂ§±Êïà*/
+	//SetWindowLong(m_hWnd, GWL_EXSTYLE, ex_style);
+
+	//SetLayeredWindowAttributes(m_hWnd, RGB(0, 0, 0), 0, LWA_COLORKEY);
+	//SetLayeredWindowAttributes(m_hWnd, RGB(0, 0, 0), 255, LWA_ALPHA);
+	//
+	//ÁΩÆÈ°∂
+	//SetWindowPos(m_hWnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
 
 	ShowWindow(m_hWnd, SW_SHOWNORMAL);
+
 	UpdateWindow(m_hWnd);
 }
 
@@ -90,7 +94,7 @@ void Wnd::RegisterWndProc(UINT message, const MSG_Handler& wndProc)
 
 void Wnd::peekMessage()
 {
-	static MSG msg;
+	static MSG msg{};
 	while (PeekMessage(&msg, m_hWnd, 0, 0, PM_REMOVE))
 	{
 		TranslateMessage(&msg);

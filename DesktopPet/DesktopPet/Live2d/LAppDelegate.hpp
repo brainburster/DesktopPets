@@ -9,6 +9,8 @@
 
 #include <wrl/client.h>
 #include <d3dcompiler.h>
+#include <dcomp.h>
+#include <dxgi.h>
 
 #include <Rendering/D3D11/CubismNativeInclude_D3D11.hpp>
 #include <CubismFramework.hpp>
@@ -173,10 +175,10 @@ private:
 	HWND                    _windowHandle;  ///< ウィンドウハンドル
 	ID3D11Device* _device;        ///< D3Dデバイス
 	ID3D11DeviceContext* _deviceContext; ///< D3D描画コンテキスト
-	IDXGISwapChain* _swapChain;     ///< スワップチェーン
+	IDXGISwapChain1* _swapChain;     ///< スワップチェーン
 	WNDCLASSEX              _windowClass;   ///< ウィンドウクラス
 	DeviceStep              _deviceStep;    ///< デバイスサイズ変更などのステップ
-	DXGI_SWAP_CHAIN_DESC    _presentParameters; ///< プレゼントパラメータ
+	DXGI_SWAP_CHAIN_DESC1    _presentParameters; ///< プレゼントパラメータ
 
 	ID3D11RenderTargetView* _renderTargetView;  ///< 描画ターゲットビュー
 	ID3D11UnorderedAccessView* _uavPostBuffer;
@@ -194,5 +196,12 @@ private:
 	ID3D11BlendState* _blendState;    ///< スプライト描画用ブレンドステート
 	ID3D11InputLayout* _vertexFormat;  ///< スプライト描画用型宣言
 
-	ID3D11ComputeShader* _postProcessingShader;
+	//
+	//ID3D11ComputeShader* _postProcessingShader;
+	IDXGIDevice* _dxgiDevice;
+	IDXGIFactory2* _dxgiFactory;
+	// Direct Composition
+	IDCompositionDevice* _dCompDevice;
+	IDCompositionTarget* _composTarget;
+	IDCompositionVisual* _dCompVisual;
 };

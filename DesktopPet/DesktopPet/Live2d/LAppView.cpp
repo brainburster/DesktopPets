@@ -162,29 +162,29 @@ void LAppView::InitializeSprite()
 	float fWidth = 0.0f;
 	float fHeight = 0.0f;
 
-	string imageName = resourcesPath + BackImageName;
-	LAppTextureManager::TextureInfo* backgroundTexture = textureManager->CreateTextureFromPngFile(imageName, false);
-	x = width * 0.5f;
-	y = height * 0.5f;
-	fWidth = static_cast<float>(backgroundTexture->width * 2);
-	fHeight = static_cast<float>(height) * 0.95f;
-	_back = new LAppSprite(x, y, fWidth, fHeight, backgroundTexture->id);
+	//string imageName = resourcesPath + BackImageName;
+	//LAppTextureManager::TextureInfo* backgroundTexture = textureManager->CreateTextureFromPngFile(imageName, false);
+	//x = width * 0.5f;
+	//y = height * 0.5f;
+	//fWidth = static_cast<float>(backgroundTexture->width * 2);
+	//fHeight = static_cast<float>(height) * 0.95f;
+	//_back = new LAppSprite(x, y, fWidth, fHeight, backgroundTexture->id);
 
-	imageName = resourcesPath + GearImageName;
-	LAppTextureManager::TextureInfo* gearTexture = textureManager->CreateTextureFromPngFile(imageName, false);
-	x = static_cast<float>(width - gearTexture->width * 0.5f);
-	y = static_cast<float>(height - gearTexture->height * 0.5f);
-	fWidth = static_cast<float>(gearTexture->width);
-	fHeight = static_cast<float>(gearTexture->height);
-	_gear = new LAppSprite(x, y, fWidth, fHeight, gearTexture->id);
+	//imageName = resourcesPath + GearImageName;
+	//LAppTextureManager::TextureInfo* gearTexture = textureManager->CreateTextureFromPngFile(imageName, false);
+	//x = static_cast<float>(width - gearTexture->width * 0.5f);
+	//y = static_cast<float>(height - gearTexture->height * 0.5f);
+	//fWidth = static_cast<float>(gearTexture->width);
+	//fHeight = static_cast<float>(gearTexture->height);
+	//_gear = new LAppSprite(x, y, fWidth, fHeight, gearTexture->id);
 
-	imageName = resourcesPath + PowerImageName;
-	LAppTextureManager::TextureInfo* powerTexture = textureManager->CreateTextureFromPngFile(imageName, false);
-	x = static_cast<float>(width - powerTexture->width * 0.5f);
-	y = static_cast<float>(powerTexture->height * 0.5f);
-	fWidth = static_cast<float>(powerTexture->width);
-	fHeight = static_cast<float>(powerTexture->height);
-	_power = new LAppSprite(x, y, fWidth, fHeight, powerTexture->id);
+	//imageName = resourcesPath + PowerImageName;
+	//LAppTextureManager::TextureInfo* powerTexture = textureManager->CreateTextureFromPngFile(imageName, false);
+	//x = static_cast<float>(width - powerTexture->width * 0.5f);
+	//y = static_cast<float>(powerTexture->height * 0.5f);
+	//fWidth = static_cast<float>(powerTexture->width);
+	//fHeight = static_cast<float>(powerTexture->height);
+	//_power = new LAppSprite(x, y, fWidth, fHeight, powerTexture->id);
 
 	x = width * 0.5f;
 	y = height * 0.5f;

@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <Windows.h>
 #include <functional>
 #include <map>
@@ -20,6 +20,8 @@ public:
 	static LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 	void RegisterWndProc(UINT message, const MSG_Handler& wndProc);
 	void peekMessage();
+	int GetHeight() { return m_height; }
+	int GetWidth() { return m_width; }
 private:
 	HINSTANCE m_hInstance;
 	char m_szTitle[20];

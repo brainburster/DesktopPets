@@ -1,4 +1,4 @@
-#include "resource.h"
+ï»¿#include "resource.h"
 #include "MaidCat.h"
 #include "Wnd.h"
 #include <thread>
@@ -41,14 +41,14 @@ MaidCat::~MaidCat()
 
 void MaidCat::Draw()
 {
-	//ÇåÆÁ
-	RECT rect;
+	//æ¸…å±
+	RECT rect{};
 	GetClientRect(wnd->GetHWND(), &rect);
 	HBRUSH brush = CreateSolidBrush(RGB(255, 255, 255));
 	FillRect(device, &rect, brush);
 	DeleteObject(brush);
 
-	//»æÖÆÍ¼Æ¬
+	//ç»˜åˆ¶å›¾ç‰‡
 	if (pick_up) {
 		BitBlt(device, 0, 0, bm2.bmWidth, bm2.bmHeight, hdcImage2, 0, 0, SRCCOPY);
 	}

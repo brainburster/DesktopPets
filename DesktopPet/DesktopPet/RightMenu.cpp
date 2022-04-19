@@ -1,4 +1,4 @@
-#include "RightMenu.h"
+ï»¿#include "RightMenu.h"
 #include "resource.h"
 #include "logger.h"
 
@@ -8,7 +8,7 @@ RightMenu::RightMenu(Wnd* wnd)
 	if (hMenu) {
 		hMenu = GetSubMenu(hMenu, 0);
 	}
-	//ÏÔÊ¾ÓÒ¼ü²Ëµ¥
+	//æ˜¾ç¤ºå³é”®èœå•
 	wnd->RegisterWndProc(WM_CONTEXTMENU, [&](auto wparam, auto lparam) {
 		TrackPopupMenu(hMenu,
 			TPM_LEFTALIGN | TPM_TOPALIGN | TPM_RIGHTBUTTON,
@@ -21,13 +21,13 @@ RightMenu::RightMenu(Wnd* wnd)
 		return true;
 		});
 
-	//´¦ÀíÓÒ¼ü²Ëµ¥
+	//å¤„ç†å³é”®èœå•
 	wnd->RegisterWndProc(WM_COMMAND, [wnd, this](auto wparam, auto lparam) {
 		switch (LOWORD(wparam))
 		{
 		case ID_ABOUT:
-			//µ¯³ö¹ØÓÚ¶Ô»°¿ò
-			DialogBox((HINSTANCE)GetWindowLongW(wnd->GetHWND(), GWLP_HINSTANCE), MAKEINTRESOURCE(IDD_ABOUTBOX), wnd->GetHWND(), [](auto hDlg, auto message, auto wparam, auto lparam) {
+			//å¼¹å‡ºå…³äºŽå¯¹è¯æ¡†
+			DialogBox(GetModuleHandle(NULL) /*(HINSTANCE)GetWindowLongW(wnd->GetHWND(), GWLP_HINSTANCE)*/, MAKEINTRESOURCE(IDD_ABOUTBOX), wnd->GetHWND(), [](auto hDlg, auto message, auto wparam, auto lparam) {
 				switch (message)
 				{
 				case WM_INITDIALOG:
@@ -50,7 +50,7 @@ RightMenu::RightMenu(Wnd* wnd)
 				});
 			break;
 		case ID_SETTING:
-			Logger::Log(TEXT("»¹Ã»×ö"), wnd->GetHWND());
+			Logger::Log(TEXT("è¿˜æ²¡åš"), wnd->GetHWND());
 			break;
 		case ID_QUIT:
 			SendMessage(wnd->GetHWND(), WM_CLOSE, NULL, NULL);

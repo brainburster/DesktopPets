@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include "Wnd.h"
 #include "Character.h"
@@ -52,12 +52,12 @@ int DesktopPet<T>::Run()
 template<typename T>
 bool DesktopPet<T>::Init()
 {
-	//Ö»ÔÊĞí´æÔÚÒ»¸öÊµÀı
+	//åªå…è®¸å­˜åœ¨ä¸€ä¸ªå®ä¾‹
 	auto flag = CreateMutex(NULL, TRUE, TEXT("DesktopPet"));
 	auto err = GetLastError();
 	if (err == ERROR_ALREADY_EXISTS)
 	{
-		Logger::Log(TEXT("ÒÑ´æÔÚÒ»¸öÊµÀı"));
+		Logger::Log(TEXT("å·²å­˜åœ¨ä¸€ä¸ªå®ä¾‹"));
 		return false;
 	}
 	if (flag)
@@ -65,17 +65,17 @@ bool DesktopPet<T>::Init()
 		ReleaseMutex(flag);
 	}
 
-	//¹Ø±Õ
+	//å…³é—­
 	wnd.RegisterWndProc(WM_DESTROY, [this](auto, auto) {
 		bCloseApp = true;
 		return true;
 		});
-	//äÖÈ¾
+	//æ¸²æŸ“
 	wnd.RegisterWndProc(WM_PAINT, [this](auto, auto) {
 		character.Draw();
 		return true;
 		});
-	//°´×¡¿ÉÍÏ×§
+	//æŒ‰ä½å¯æ‹–æ‹½
 	wnd.RegisterWndProc(WM_LBUTTONDOWN, [this](auto, auto) {
 		SendMessage(wnd.GetHWND(), WM_SYSCOMMAND, SC_MOVE | HTCAPTION, 0);
 		return true;
@@ -101,6 +101,6 @@ void DesktopPet<T>::Loop()
 			lag -= delay;
 		}
 		character.Draw();
-		Sleep(1);//¼õÉÙcpuÕ¼ÓÃ
+		Sleep(1);//å‡å°‘cpuå ç”¨
 	}
 }

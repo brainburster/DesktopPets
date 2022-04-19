@@ -16,6 +16,9 @@
 #include "LAppTextureManager.hpp"
 #include "LAppModel.hpp"
 
+#pragma comment(lib, "dxgi.lib")
+#pragma comment(lib, "dcomp.lib")
+
 using namespace std;
 using namespace Csm;
 using namespace LAppDefine;
@@ -25,7 +28,7 @@ namespace {
 
 	const LPCSTR ClassName = "Cubism DirectX11 Sample";
 
-	const csmInt32 BackBufferNum = 1; // バックバッファ枚数
+	const csmInt32 BackBufferNum = 2;//1; // バックバッファ枚数
 }
 
 LAppDelegate* LAppDelegate::GetInstance()
@@ -60,21 +63,50 @@ bool LAppDelegate::Initialize(HWND hwnd)
 	// デバイス設定
 	memset(&_presentParameters, 0, sizeof(_presentParameters));
 	_presentParameters.BufferCount = BackBufferNum;
-	_presentParameters.BufferDesc.Width = LAppDefine::RenderTargetWidth;
-	_presentParameters.BufferDesc.Height = LAppDefine::RenderTargetHeight;
-	_presentParameters.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-	_presentParameters.BufferDesc.RefreshRate.Numerator = 60;
-	_presentParameters.BufferDesc.RefreshRate.Denominator = 1;
+	_presentParameters.Width = LAppDefine::RenderTargetWidth;
+	_presentParameters.Height = LAppDefine::RenderTargetHeight;
+	//_presentParameters.BufferDesc.Width = LAppDefine::RenderTargetWidth;
+	//_presentParameters.BufferDesc.Height = LAppDefine::RenderTargetHeight;
+	//_presentParameters.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	//_presentParameters.BufferDesc.RefreshRate.Numerator = 60;
+	//_presentParameters.BufferDesc.RefreshRate.Denominator = 1;
+	_presentParameters.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 	_presentParameters.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 	_presentParameters.SampleDesc.Count = 1;
 	_presentParameters.SampleDesc.Quality = 0;
-	_presentParameters.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
+	_presentParameters.SwapEffect = DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL;//DXGI_SWAP_EFFECT_DISCARD;
 	_presentParameters.Flags = 0;
-	_presentParameters.Windowed = TRUE;
-	_presentParameters.OutputWindow = _windowHandle;
+	//_presentParameters.Windowed = TRUE;
+	//_presentParameters.OutputWindow = _windowHandle;
+	_presentParameters.AlphaMode = DXGI_ALPHA_MODE_PREMULTIPLIED;
+	//
+	//	D3D_FEATURE_LEVEL level{};
+	//	HRESULT result = D3D11CreateDeviceAndSwapChain(NULL,
+	//		D3D_DRIVER_TYPE_HARDWARE,
+	//		NULL, // D3D_DRIVER_TYPE_HARDWAREの場合はNULL固定
+	//#ifdef CSM_DEBUG
+	//		D3D11_CREATE_DEVICE_DEBUG,
+	//#else
+	//		0,  // 単一スレッドでの描画コマンド発行を保証する場合はこれでちょっと速度向上する → D3D11_CREATE_DEVICE_SINGLETHREADED
+	//#endif
+	//		NULL,   // NULLの場合勝手に{ D3D_FEATURE_LEVEL_11_0, D3D_FEATURE_LEVEL_10_1, D3D_FEATURE_LEVEL_10_0, D3D_FEATURE_LEVEL_9_3, D3D_FEATURE_LEVEL_9_2, D3D_FEATURE_LEVEL_9_1, }; と認識される
+	//		0,      // ↑の要素数
+	//		D3D11_SDK_VERSION,
+	//		&_presentParameters,
+	//		&_swapChain,
+	//		&_device,
+	//		&level,
+	//		&_deviceContext);
+	//	if (FAILED(result))
+	//	{
+	//		LAppPal::PrintLog("Fail Direct3D Create Device 0x%x", result);
+	//		return false;
+	//	}
 
-	D3D_FEATURE_LEVEL level;
-	HRESULT result = D3D11CreateDeviceAndSwapChain(NULL,
+	//只创建device
+	D3D_FEATURE_LEVEL level{};
+	HRESULT result = D3D11CreateDevice(
+		NULL,
 		D3D_DRIVER_TYPE_HARDWARE,
 		NULL, // D3D_DRIVER_TYPE_HARDWAREの場合はNULL固定
 #ifdef CSM_DEBUG
@@ -85,16 +117,30 @@ bool LAppDelegate::Initialize(HWND hwnd)
 		NULL,   // NULLの場合勝手に{ D3D_FEATURE_LEVEL_11_0, D3D_FEATURE_LEVEL_10_1, D3D_FEATURE_LEVEL_10_0, D3D_FEATURE_LEVEL_9_3, D3D_FEATURE_LEVEL_9_2, D3D_FEATURE_LEVEL_9_1, }; と認識される
 		0,      // ↑の要素数
 		D3D11_SDK_VERSION,
-		&_presentParameters,
-		&_swapChain,
 		&_device,
 		&level,
 		&_deviceContext);
+
 	if (FAILED(result))
 	{
 		LAppPal::PrintLog("Fail Direct3D Create Device 0x%x", result);
 		return false;
 	}
+
+	//DXGI
+	_dxgiDevice = (IDXGIDevice*)_device;
+	CreateDXGIFactory2(DXGI_CREATE_FACTORY_DEBUG,
+		__uuidof(_dxgiFactory),
+		(void**)(&_dxgiFactory));
+
+	//Direct Composition
+	DCompositionCreateDevice(_dxgiDevice, __uuidof(_dCompDevice), (void**)&_dCompDevice);
+	_dCompDevice->CreateTargetForHwnd(hwnd, true, &_composTarget);
+	_dCompDevice->CreateVisual(&_dCompVisual);
+	_dxgiFactory->CreateSwapChainForComposition(_dxgiDevice, &_presentParameters, nullptr, &_swapChain);
+	_dCompVisual->SetContent(_swapChain);
+	_composTarget->SetRoot(_dCompVisual);
+	_dCompDevice->Commit();
 
 	// RenderTargetView/DepthStencilViewの作成
 	CreateRenderTarget(static_cast<UINT>(LAppDefine::RenderTargetWidth), static_cast<UINT>(LAppDefine::RenderTargetHeight));
@@ -180,30 +226,30 @@ bool LAppDelegate::CreateRenderTarget(UINT width, UINT height)
 		return false;
 	}
 
-	//hr = _device->CreateRenderTargetView(_backBuffer, NULL, &_renderTargetView);
+	hr = _device->CreateRenderTargetView(_backBuffer, NULL, &_renderTargetView);
 
-	D3D11_TEXTURE2D_DESC post_buffer_desc{};
-	post_buffer_desc.Width = width;
-	post_buffer_desc.Height = height;
-	post_buffer_desc.MipLevels = 1;
-	post_buffer_desc.ArraySize = 1;
-	post_buffer_desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-	post_buffer_desc.Usage = D3D11_USAGE_DEFAULT;
-	post_buffer_desc.BindFlags = D3D11_BIND_UNORDERED_ACCESS | D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET;
-	post_buffer_desc.CPUAccessFlags = 0;
-	post_buffer_desc.MiscFlags = 0;
-	post_buffer_desc.SampleDesc.Count = 1;
-	post_buffer_desc.SampleDesc.Quality = 0;
+	//D3D11_TEXTURE2D_DESC post_buffer_desc{};
+	//post_buffer_desc.Width = width;
+	//post_buffer_desc.Height = height;
+	//post_buffer_desc.MipLevels = 1;
+	//post_buffer_desc.ArraySize = 1;
+	//post_buffer_desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	//post_buffer_desc.Usage = D3D11_USAGE_DEFAULT;
+	//post_buffer_desc.BindFlags = D3D11_BIND_UNORDERED_ACCESS | D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET;
+	//post_buffer_desc.CPUAccessFlags = 0;
+	//post_buffer_desc.MiscFlags = 0;
+	//post_buffer_desc.SampleDesc.Count = 1;
+	//post_buffer_desc.SampleDesc.Quality = 0;
 
-	hr = _device->CreateTexture2D(&post_buffer_desc, 0, &_postBuffer);
+	//hr = _device->CreateTexture2D(&post_buffer_desc, 0, &_postBuffer);
 
-	if (FAILED(hr))
-	{
-		LAppPal::PrintLog("Fail Create Post Buffer 0x%x", hr);
-		return false;
-	}
+	//if (FAILED(hr))
+	//{
+	//	LAppPal::PrintLog("Fail Create Post Buffer 0x%x", hr);
+	//	return false;
+	//}
 
-	hr = _device->CreateRenderTargetView(_postBuffer, NULL, &_renderTargetView);
+	//hr = _device->CreateRenderTargetView(_postBuffer, NULL, &_renderTargetView);
 
 	//
 // Getした分はRelease
@@ -343,6 +389,31 @@ void LAppDelegate::Release()
 	{
 		_device->Release();
 		_device = NULL;
+	}
+
+	//if (_dxgiDevice) {
+	//	_dxgiDevice->Release();
+	//	_dxgiDevice = NULL;
+	//}
+
+	if (_dxgiFactory) {
+		_dxgiFactory->Release();
+		_dxgiFactory = NULL;
+	}
+
+	if (_dCompDevice) {
+		_dCompDevice->Release();
+		_dCompDevice = NULL;
+	}
+
+	if (_composTarget) {
+		_composTarget->Release();
+		_composTarget = NULL;
+	}
+
+	if (_dCompVisual) {
+		_dCompVisual->Release();
+		_dCompVisual = NULL;
 	}
 
 	UnregisterClass(ClassName, _windowClass.hInstance);
@@ -556,60 +627,60 @@ bool LAppDelegate::CreateShader()
 		}
 	} while (0);
 
-	ID3DBlob* CSError = NULL;
-	ID3DBlob* CSBlob = NULL;
+	//ID3DBlob* CSError = NULL;
+	//ID3DBlob* CSBlob = NULL;
 
-#define STR(...) #__VA_ARGS__
+	//#define STR(...) #__VA_ARGS__
+	//
+	//	static const char* cs_shader_str = STR(
+	//		RWTexture2D<float4> tex_out : register(u0);
+	//
+	//	[numthreads(32, 32, 1)]
+	//	void CSMain(uint3 DTid : SV_DispatchThreadID)
+	//	{
+	//		if (tex_out[DTid.xy].a < 0.65f && tex_out[DTid.xy].a>0.0001f) {
+	//			tex_out[DTid.xy] = float4(0, 0, 0, 0);
+	//		}
+	//	}
+	//	);
 
-	static const char* cs_shader_str = STR(
-	RWTexture2D<float4> tex_out : register(u0);
+		//hr = D3DCompile(
+		//	cs_shader_str,
+		//	strlen(cs_shader_str),
+		//	NULL,
+		//	NULL,
+		//	NULL,
+		//	"CSMain",
+		//	"cs_5_0",
+		//	0,
+		//	0,
+		//	&CSBlob,
+		//	&CSError);
 
-	[numthreads(32, 32, 1)]
-	void CSMain(uint3 DTid : SV_DispatchThreadID)
-	{
-		if (tex_out[DTid.xy].a < 0.65f && tex_out[DTid.xy].a>0.0001f){
-			tex_out[DTid.xy] = float4(0, 0, 0, 0);
-		}
-	}
-	);
+		//if (FAILED(hr))
+		//{
+		//	LAppPal::PrintLog("Fail Compile Compute Shader");
+		//	return false;
+		//}
 
-	hr = D3DCompile(
-		cs_shader_str,
-		strlen(cs_shader_str),
-		NULL,
-		NULL,
-		NULL,
-		"CSMain",
-		"cs_5_0",
-		0,
-		0,
-		&CSBlob,
-		&CSError);
+		//hr = _device->CreateComputeShader(CSBlob->GetBufferPointer(), CSBlob->GetBufferSize(), NULL, &_postProcessingShader);
 
-	if (FAILED(hr))
-	{
-		LAppPal::PrintLog("Fail Compile Compute Shader");
-		return false;
-	}
+		//if (FAILED(hr))
+		//{
+		//	LAppPal::PrintLog("Fail Create Compute Shader");
+		//	return false;
+		//}
 
-	hr = _device->CreateComputeShader(CSBlob->GetBufferPointer(), CSBlob->GetBufferSize(), NULL, &_postProcessingShader);
-
-	if (FAILED(hr))
-	{
-		LAppPal::PrintLog("Fail Create Compute Shader");
-		return false;
-	}
-
-	if (CSBlob)
-	{
-		CSBlob->Release();
-		CSBlob = NULL;
-	}
-	if (CSError)
-	{
-		CSError->Release();
-		CSError = NULL;
-	}
+	//if (CSBlob)
+	//{
+	//	CSBlob->Release();
+	//	CSBlob = NULL;
+	//}
+	//if (CSError)
+	//{
+	//	CSError->Release();
+	//	CSError = NULL;
+	//}
 
 	if (pixelError)
 	{
@@ -716,11 +787,11 @@ void LAppDelegate::ReleaseShader()
 		_vertexShader->Release();
 		_vertexShader = NULL;
 	}
-	if (_postProcessingShader)
-	{
-		_postProcessingShader->Release();
-		_postProcessingShader = NULL;
-	}
+	//if (_postProcessingShader)
+	//{
+	//	_postProcessingShader->Release();
+	//	_postProcessingShader = NULL;
+	//}
 }
 
 void LAppDelegate::SetMouse(float x, float y)
@@ -745,7 +816,7 @@ void LAppDelegate::Frame()
 	// 描画
 	_view->Render();
 
-	auto fence = [&]() {
+	/*auto fence = [&]() {
 		D3D11_QUERY_DESC pQueryDesc{};
 		pQueryDesc.Query = D3D11_QUERY_EVENT;
 		pQueryDesc.MiscFlags = 0;
@@ -771,7 +842,7 @@ void LAppDelegate::Frame()
 
 	_deviceContext->CopyResource(_backBuffer, _postBuffer);
 
-	fence();
+	fence();*/
 
 	// フレーム末端処理
 	EndFrame();
@@ -887,8 +958,8 @@ void LAppDelegate::ResizeDevice()
 			_depthTexture = NULL;
 		}
 
-		_presentParameters.BufferDesc.Width = nowWidth;
-		_presentParameters.BufferDesc.Height = nowHeight;
+		//_presentParameters.BufferDesc.Width = nowWidth;
+		//_presentParameters.BufferDesc.Height = nowHeight;
 
 		if (_swapChain)
 		{
